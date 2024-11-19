@@ -45,7 +45,7 @@ const WorkoutForm = () => {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
       <View style={styles.container}>
       <Image 
-              source={require('./images/unnamed.png')} 
+              source={require('./assets/liftoff_logo.png')} 
               style={styles.image} 
             />
       <Text>{'\n'}</Text>

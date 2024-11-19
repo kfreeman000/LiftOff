@@ -40,7 +40,7 @@ const RepForm = () => {
     return (
       <View style={{ flex: 1, paddingTop: 20, paddingHorizontal: 20, backgroundColor: 'white', alignItems: 'center' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Image source={require('./liftoff_logo.png')} style={{ width: 100, height: 100, marginRight: 10 }} />
+          <Image source={require('./assets/liftoff_logo.png')} style={{ width: 100, height: 100, marginRight: 10 }} />
           <Text style={{ fontFamily: 'Comfortaa-Bold', fontSize: 30, fontWeight: 'bold', color: '#60B5F9' }}>1RM Calculator</Text>
         </View>
         <Picker
