@@ -205,12 +205,32 @@ function HomeStackScreen() {
 
 function AchievementsStackScreen() {
   return (
-    <AchievementsStack.Navigator screenOptions={{headerTintColor: '#60B5F9'}}>
-      <AchievementsStack.Screen name="Achievements" component={AchievementsScreen} />
-      <AchievementsStack.Screen name="View Achievements" component={ViewAchievementsScreen} />
-      <AchievementsStack.Screen name="Create Goal" component={CreateGoalScreen} />
-      <AchievementsStack.Screen name="View Goals" component={ViewGoalsScreen} />
-      <AchievementsStack.Screen name="Save Goal" component={SaveGoalScreen} />
+    <AchievementsStack.Navigator
+      screenOptions={{
+        headerTintColor: '#60B5F9',
+        headerBackTitle: 'Achievements',
+      }}
+    >
+      <AchievementsStack.Screen
+        name="Achievements"
+        component={AchievementsForm}
+      />
+      <AchievementsStack.Screen
+        name="View Achievements"
+        component={ViewAchievementsForm}
+      />
+      <AchievementsStack.Screen
+        name="Create Goal"
+        component={CreateGoalForm}
+      />
+      <AchievementsStack.Screen
+        name="View Goals"
+        component={ViewGoalsForm}
+      />
+      <AchievementsStack.Screen
+        name="Save Goal"
+        component={SaveGoalForm}
+      />
     </AchievementsStack.Navigator>
   );
 }
