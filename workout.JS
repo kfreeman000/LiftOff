@@ -1,33 +1,26 @@
-import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from 'react';
 import { Alert, Button, Image, Keyboard, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
+import { addDoc, collection, Timestamp } from 'firebase/firestore';
+import { firestore } from './firebase'; // Make sure the path is correct
+
+
 const WorkoutForm = () => {
-    const [workout, setWorkout] = useState(null);
-    const [reps, setReps] = useState("");
-    const [weight, setWeight] = useState("");
-    const [comments, setComments] = useState("");
-    const [media, setMedia] = useState(null);
-    const [open, setOpen] = useState(false);
-    const [items, setItems] = useState([
-      { label: 'Dead Lift', value: 'deadlift' },
-      { label: 'Squats', value: 'squats' },
-      { label: 'Bench Press', value: 'Bench' },
-      { label: 'Romanian Dead Lift', value: 'RDL' },
-    ]);
-
-  const handleFilePick = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setMedia(result.assets);
-    }
+  const [workout, setWorkout] = useState(null);
+  const [reps, setReps] = useState("");
+  const [weight, setWeight] = useState("");
+  const [comments, setComments] = useState("");
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState([
+    { label: 'Dead Lift', value: 'deadlift' },
+    { label: 'Squats', value: 'squats' },
+    { label: 'Bench Press', value: 'bench' },
+    { label: 'Romanian Dead Lift', value: 'rdl' },
+  ]);
+  const calculate1RM = (weight, reps) => {
+    const oneRepMax = weight * (1 + 0.0333 * reps);
+    return Math.round(oneRepMax);
   };
 
   const handleSubmit = async () => {
@@ -36,26 +29,49 @@ const WorkoutForm = () => {
       return;
     }
 
-    Keyboard.dismiss();
+  const oneRepMax = calculate1RM(parseFloat(weight), parseInt(reps));
 
-    insertWorkoutData(workout, reps, weight, comments, media);
+  const workoutData = {
+    workout,
+    reps: parseInt(reps),
+    weight: parseFloat(weight),
+    comments,
+    oneRepMax, // Add the 1RM value to the data
+    date: Timestamp.now(),
+  };
+
+    // Save the workout data to Firestore
+    await saveWorkoutToFirestore(workoutData);
+    Alert.alert(`Your calculated 1RM is: ${oneRepMax.toFixed(2)}`);
+    Keyboard.dismiss();
+  };
+
+  const saveWorkoutToFirestore = async (workoutData) => {
+    try {
+      const workoutRef = collection(firestore, 'workouts');
+      const docRef = await addDoc(workoutRef, workoutData);
+      console.log('Workout added with ID: ', docRef.id);
+    } catch (e) {
+      console.error('Error adding workout: ', e);
+    }
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={true}>
       <View style={styles.container}>
-      <Image 
-              source={require('./assets/liftoff_logo.png')} 
-              style={styles.image} 
-            />
-      <Text>{'\n'}</Text>
+        <Image 
+          source={require('./assets/liftoff_logo.png')} 
+          style={styles.image} 
+        />
+        <Text>{'\n'}</Text>
+        
         <Text style={styles.label}>Select Workout</Text>
         <DropDownPicker
           open={open}
           value={workout}
           items={items}
           setOpen={setOpen}
-          setValue={setWorkout}
+          setValue={setWorkout}  // Use setWorkout to update the workout state
           placeholder="Choose a workout"
           containerStyle={{ height: 60, width: '100%' }}
           style={styles.dropdown}
@@ -80,22 +96,20 @@ const WorkoutForm = () => {
           keyboardType="numeric"
         />
 
-        <Text style={styles.label}>Comments</Text>
+        <Text style={styles.label}>Comments (optional)</Text>
         <TextInput
           style={styles.input}
           value={comments}
           onChangeText={setComments}
-          placeholder="Add any comments"
-          multiline
-          numberOfLines={4}
+          placeholder="Enter any comments"
         />
 
-        <Button title="Upload Media" onPress={handleFilePick} />
         <Button title="Submit" onPress={handleSubmit} />
       </View>
     </TouchableWithoutFeedback>
   );
 };
+
 
 const styles = StyleSheet.create({
 container: {
