@@ -1,93 +1,4 @@
-// import { NavigationContainer } from '@react-navigation/native';
-// import { createNativeStackNavigator } from '@react-navigation/native-stack';
-// import * as React from 'react';
-// import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-// import WorkoutForm from './workout.js';
 
-// function HomeScreen({ navigation }) {
-//   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//       <Text>Lift Off</Text>
-//       <Text>{'\n'}</Text>
-//       <Image source={require('./images/unnamed.png')} style={{ width: 200, height: 200 }} />
-//       <Text>{'\n\n'}</Text>
-//       <TouchableOpacity onPress={() => navigation.navigate('Reps')} activeOpacity={0.2}>
-//         <Text style={styles.button}>Rep Calculator</Text>
-//       </TouchableOpacity>
-//       <Text>{'\n\n'}</Text>
-//       <TouchableOpacity onPress={() => navigation.navigate('Submit')} activeOpacity={0.2}>
-//         <Text style={styles.button}>Submit Workout</Text>
-//       </TouchableOpacity>
-//       <Text>{'\n\n'}</Text>
-//       <TouchableOpacity onPress={() => navigation.navigate('Achievements')} activeOpacity={0.2}>
-//         <Text style={styles.button}>Achievements</Text>
-//       </TouchableOpacity>
-//     </View>
-//   );
-// };
-
-// function RepScreen() {
-//   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//       <Text>Rep Calculator</Text>
-//       <Text>{'\n'}</Text>
-//       <Image source={require('./images/unnamed.png')} style={{width: 200,     height: 200}}/>
-//     </View>
-//   );
-// }
-
-// function WorkoutScreen() {
-//   return (
-//       <WorkoutForm />
-//   );
-// }
-
-// function AchievementsScreen() {
-//   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//       <Text>Achievements</Text>
-//       <Text>{'\n'}</Text>
-//       <Image source={require('./images/unnamed.png')} style={{width: 200,     height: 200}}/>
-//     </View>
-//   );
-// }
-
-// const Stack = createNativeStackNavigator();
-
-// function App() {
-//   return (
-//     <NavigationContainer>
-//       <Stack.Navigator initialRouteName="Home">
-//         <Stack.Screen name="Home" component={HomeScreen} />
-//         <Stack.Screen name="Reps" component={RepScreen} />
-//         <Stack.Screen name="Submit" component={WorkoutScreen} />
-//         <Stack.Screen name="Achievements" component={AchievementsScreen} />
-//       </Stack.Navigator>
-//     </NavigationContainer>
-//   );
-// }
-
-
-// const styles = StyleSheet.create({
-//   button: {
-//     alignItems: "center",
-//     marginTop:10,
-//     paddingTop:15,
-//     paddingBottom:15,
-//     marginLeft:30,
-//     marginRight:30,
-//     borderRadius:10,
-//     borderWidth: 1,
-//     backgroundColor: "#40E0D0",
-//     padding: 10,
-//      overflow: "hidden"
-//   }
-// }
-// )
-
-// export default App;
-
-/* Cole added this trying to get everything on git */
 
 import React, { useState, useEffect } from 'react';
 import {
@@ -108,6 +19,8 @@ import { useFonts } from 'expo-font';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import WorkoutForm from './workout';
 import RepForm from './reps.js';
+import ProfileForm from './profile.js';
+import Friends from './friends.js';
 import { AchievementsForm, ViewAchievementsForm, CreateGoalForm, ViewGoalsForm, SaveGoalForm } from './achievements.js';
 import styles from './style.js'
  
@@ -124,7 +37,7 @@ function HomeScreen({navigation}) {
             <Text style={styles.buttonText}>Submit Workout</Text>
           </TouchableOpacity>
           <Text>{'\n\n'}</Text>
-          <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate("Achievements")} activeOpacity={0.2}>
+          <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate("AchievementsScreen")} activeOpacity={0.2}>
             <Text style={styles.buttonText}>Achievements</Text>
           </TouchableOpacity>
         </View>
@@ -133,17 +46,13 @@ function HomeScreen({navigation}) {
 
 function ProfileScreen() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Profile Screen</Text>
-    </View>
+    <ProfileForm />
   );
 }
 
 function FriendsScreen() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Friends Screen</Text>
-    </View>
+    <Friends />
   );
 }
 
@@ -191,19 +100,20 @@ function SaveGoalScreen() {
 
 const HomeStack = createNativeStackNavigator();
 const AchievementsStack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator screenOptions={{headerTintColor: '#60B5F9'}}>
-        <HomeStack.Screen name="Home" component={HomeScreen} options={{ title: '' }}/>
+        <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: '' }}/>
         <HomeStack.Screen name="Reps" component={RepScreen} options={{ title: '' }}/>
         <HomeStack.Screen name="Submit" component={WorkoutScreen} />
-        <HomeStack.Screen name="Achievements" component={AchievementsStackScreen} options={{ title: '' }}/>
+        <HomeStack.Screen name="AchievementsScreen" component={AchievementsStackScreen} options={{ title: '' }}/>
     </HomeStack.Navigator>
   );
 }
 
-function AchievementsStackScreen() {
+function AchievementsStackScreen({ addGoal }) {
   return (
     <AchievementsStack.Navigator
       screenOptions={{
@@ -212,7 +122,7 @@ function AchievementsStackScreen() {
       }}
     >
       <AchievementsStack.Screen
-        name="Achievements"
+        name="AchievementsScreen"
         component={AchievementsForm}
       />
       <AchievementsStack.Screen
@@ -221,7 +131,9 @@ function AchievementsStackScreen() {
       />
       <AchievementsStack.Screen
         name="Create Goal"
-        component={CreateGoalForm}
+        component={(props) => (
+          <CreateGoalForm {...props} addGoal={addGoal} />
+        )}
       />
       <AchievementsStack.Screen
         name="View Goals"
@@ -229,13 +141,15 @@ function AchievementsStackScreen() {
       />
       <AchievementsStack.Screen
         name="Save Goal"
-        component={SaveGoalForm}
+        component={(props) => (
+          <SaveGoalForm {...props} addGoal={addGoal} />
+        )}
       />
     </AchievementsStack.Navigator>
   );
 }
 
-const Tab = createBottomTabNavigator();
+
  
 export default function App() {
   const [goals, setGoals] = useState([]);
@@ -246,7 +160,7 @@ export default function App() {
   return ( 
     <NavigationContainer>
       <Tab.Navigator screenOptions={{ headerShown: false }}>
-        <Tab.Screen name="HomeTab" component={HomeStackScreen} options={{ tabBarIcon: ({ focused, color, size }) => ( <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={'#60B5F9'} />)}}/>
+        <Tab.Screen name="Home" component={HomeStackScreen} options={{ tabBarIcon: ({ focused, color, size }) => ( <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={'#60B5F9'} />)}}/>
         <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarIcon: ({ focused, color, size }) => ( <Ionicons name={focused ? 'person-circle' : 'person-circle-outline'} size={size} color={'#60B5F9'} />)}}/>
         <Tab.Screen name="Friends" component={FriendsScreen} options={{ tabBarIcon: ({ focused, color, size }) => ( <Ionicons name={focused ? 'people-circle' : 'people-circle-outline'} size={size} color={'#60B5F9'} />)}}/>
       </Tab.Navigator>
