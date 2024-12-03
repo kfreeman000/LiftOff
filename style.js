@@ -63,6 +63,12 @@ const styles = StyleSheet.create({
       borderRadius: 25,
       backgroundColor: "#60B5F9",
       overflow: "hidden"
+    },
+    blueHeaderText: {
+      fontFamily: 'Comfortaa-Bold',
+      color: "#60B5F9",
+      fontSize: 18,
+      textAlign: 'center'
     }
   }
   )
