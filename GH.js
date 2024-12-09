@@ -1,25 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, { useState } from 'react';
 import {
   Image,
   Text,
-  TextInput,
   TouchableOpacity,
-  View,
-  FlatList,
-  ScrollView,
-  Button,
+  View
 } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Picker } from '@react-native-picker/picker';
-import { useFonts } from 'expo-font';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import WorkoutForm from './workout';
+import { AchievementsForm, CreateGoalForm, SaveGoalForm, ViewAchievementsForm, ViewGoalsForm } from './achievements.js';
 import RepForm from './reps.js';
-import { AchievementsForm, ViewAchievementsForm, CreateGoalForm, ViewGoalsForm, SaveGoalForm } from './achievements.js';
-import ProfileForm from './profile.js';
-import styles from './style.js'
+import styles from './style.js';
+import WorkoutForm from './workout.js';
  
 function HomeScreen({navigation}) {
   return (
@@ -41,9 +34,11 @@ function HomeScreen({navigation}) {
       );
 }
 
-function ProfileScreen() {
+function ProfileScreen({navigation}) {
   return (
-    <ProfileForm />
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Profile Screen</Text>
+    </View>
   );
 }
 

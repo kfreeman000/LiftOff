@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, Image, TouchableOpacity } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { Button, FlatList, Image, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import styles from './style.js';
 
 const achievements = [
@@ -83,4 +82,5 @@ const achievements = [
     );
   }
 
-export { AchievementsForm, ViewAchievementsForm, SaveGoalForm, CreateGoalForm, ViewGoalsForm };
+export { AchievementsForm, CreateGoalForm, SaveGoalForm, ViewAchievementsForm, ViewGoalsForm };
+
