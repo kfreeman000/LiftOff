@@ -58,86 +58,101 @@ const RepForm = () => {
       </View>
     );
   }*/
-    import { collection, getDocs } from 'firebase/firestore';
+    import { Picker } from '@react-native-picker/picker';
+import { collection, getDocs } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { firestore } from './firebase'; // Your firestore config
-    
-    const WorkoutsList = () => {
-      const [workouts, setWorkouts] = useState([]);
-      
-      // Fetch workouts data on component mount
-      useEffect(() => {
-        const fetchWorkouts = async () => {
-          try {
-            const workoutRef = collection(firestore, 'workouts');
-            const querySnapshot = await getDocs(workoutRef);
-            
-            const workoutsData = querySnapshot.docs.map(doc => {
-              const data = doc.data();
-              return {
-                id: doc.id,
-                ...data,
-                date: data.date ? data.date.toDate() : null, // Safely convert date
-              };
-            });
-            
-            setWorkouts(workoutsData);
-          } catch (error) {
-            console.error("Error fetching workouts: ", error);
-          }
+       
+        const WorkoutsList = () => {
+          const [workouts, setWorkouts] = useState([]);
+          const [selectedExercise, setSelectedExercise] = useState('Squat');
+         
+          // Fetch workouts data on component mount
+          useEffect(() => {
+            const fetchWorkouts = async () => {
+              try {
+                const workoutRef = collection(firestore, 'workouts');
+                const querySnapshot = await getDocs(workoutRef);
+               
+                const workoutsData = querySnapshot.docs.map(doc => {
+                  const data = doc.data();
+                  return {
+                    id: doc.id,
+                    ...data,
+                    date: data.date ? data.date.toDate() : null, // Safely convert date
+                  };
+                });
+               
+                setWorkouts(workoutsData);
+              } catch (error) {
+                console.error("Error fetching workouts: ", error);
+              }
+            };
+       
+            fetchWorkouts();
+          }, []);
+     
+          const filteredWorkouts = workouts.filter(workout => workout.workout === selectedExercise);
+       
+          // Render the workouts in a FlatList
+          return (
+            <View style={styles.container}>
+              <Picker
+              selectedValue={selectedExercise}
+              onValueChange={(itemValue) => setSelectedExercise(itemValue)}
+              style={{ width: '100%', marginVertical: 10, color: '#000' }}
+              >
+                <Picker.Item label="Bench" value="bench" />
+                <Picker.Item label="Squat" value="squats" />
+                <Picker.Item label="Deadlift" value="deadlift" />
+                <Picker.Item label="RDL" value="rdl" />
+              </Picker>
+              <Text style={styles.header}>Workouts List</Text>
+              <FlatList
+                data={filteredWorkouts}
+                keyExtractor={item => item.id}
+                renderItem={({ item }) => {
+                  // Format the date if it's available
+                  const formattedDate = item.date ? item.date.toLocaleDateString() : 'No date';
+       
+                  return (
+                    <View style={styles.item}>
+                      <Text style={styles.itemText}>Workout: {item.workout}</Text>
+                      <Text style={styles.itemText}>Reps: {item.reps}</Text>
+                      <Text style={styles.itemText}>Weight: {item.weight}</Text>
+                      <Text style={styles.itemText}>Comments: {item.comments}</Text>
+                      <Text style={styles.itemText}>1RM: {item.oneRepMax}</Text>
+                      <Text style={styles.itemText}>Date: {formattedDate}</Text>
+                    </View>
+                  );
+                }}
+              />
+            </View>
+          );
         };
-    
-        fetchWorkouts();
-      }, []);
-    
-      // Render the workouts in a FlatList
-      return (
-        <View style={styles.container}>
-          <Text style={styles.header}>Workouts List</Text>
-          <FlatList
-            data={workouts}
-            keyExtractor={item => item.id}
-            renderItem={({ item }) => {
-              // Format the date if it's available
-              const formattedDate = item.date ? item.date.toLocaleDateString() : 'No date';
-    
-              return (
-                <View style={styles.item}>
-                  <Text style={styles.itemText}>Workout: {item.workout}</Text>
-                  <Text style={styles.itemText}>Reps: {item.reps}</Text>
-                  <Text style={styles.itemText}>Weight: {item.weight}</Text>
-                  <Text style={styles.itemText}>Comments: {item.comments}</Text>
-                  <Text style={styles.itemText}>1RM: {item.oneRepMax}</Text>
-                  <Text style={styles.itemText}>Date: {formattedDate}</Text>
-                </View>
-              );
-            }}
-          />
-        </View>
-      );
-    };
-    
-    const styles = StyleSheet.create({
-      container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: '#fff',
-      },
-      header: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
-      },
-      item: {
-        padding: 10,
-        marginBottom: 15,
-        backgroundColor: '#f0f0f0',
-        borderRadius: 5,
-      },
-      itemText: {
-        fontSize: 16,
-      },
-    });
-    
-    export default WorkoutsList;
+       
+        const styles = StyleSheet.create({
+          container: {
+            flex: 1,
+            padding: 20,
+            backgroundColor: '#fff',
+          },
+          header: {
+            fontSize: 24,
+            fontWeight: 'bold',
+            marginBottom: 10,
+          },
+          item: {
+            padding: 10,
+            marginBottom: 15,
+            backgroundColor: '#f0f0f0',
+            borderRadius: 5,
+          },
+          itemText: {
+            fontSize: 16,
+          },
+        });
+       
+        export default WorkoutsList;
+     
