@@ -11,8 +11,10 @@ import {
   View
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { AchievementsForm, CreateGoalForm, SaveGoalForm, ViewAchievementsForm, ViewGoalsForm } from './achievements.js';
+import { AchievementsForm, ViewAchievementsForm, CreateGoalForm, ViewGoalsForm, SaveGoalForm } from './achievements.js';
 import RepForm from './reps.js';
+import ProfileForm from './profile.js';
+import Friends from './friends.js';
 import styles from './style.js';
 import WorkoutForm from './workout.js';
  
@@ -38,17 +40,13 @@ function HomeScreen({navigation}) {
 
 function ProfileScreen({navigation}) {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Profile Screen</Text>
-    </View>
+    <ProfileForm />
   );
 }
 
 function FriendsScreen() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Friends Screen</Text>
-    </View>
+    <Friends />
   );
 }
 
@@ -108,7 +106,7 @@ function HomeStackScreen() {
   );
 }
 
-function AchievementsStackScreen() {
+function AchievementsStackScreen({ addGoal }) {
   return (
     <AchievementsStack.Navigator
       screenOptions={{
@@ -124,9 +122,11 @@ function AchievementsStackScreen() {
         name="View Achievements"
         component={ViewAchievementsForm}
       />
-      <AchievementsStack.Screen
+       <AchievementsStack.Screen
         name="Create Goal"
-        component={CreateGoalForm}
+        component={(props) => (
+          <CreateGoalForm {...props} addGoal={addGoal} />
+        )}
       />
       <AchievementsStack.Screen
         name="View Goals"
@@ -134,7 +134,9 @@ function AchievementsStackScreen() {
       />
       <AchievementsStack.Screen
         name="Save Goal"
-        component={SaveGoalForm}
+        component={(props) => (
+          <SaveGoalForm {...props} addGoal={addGoal} />
+        )}
       />
     </AchievementsStack.Navigator>
   );
@@ -151,7 +153,7 @@ export default function App() {
   return ( 
     <NavigationContainer>
       <Tab.Navigator screenOptions={{ headerShown: false }}>
-        <Tab.Screen name="HomeTab" component={HomeStackScreen} options={{ tabBarIcon: ({ focused, color, size }) => ( <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={'#60B5F9'} />)}}/>
+        <Tab.Screen name="Home" component={HomeStackScreen} options={{ tabBarIcon: ({ focused, color, size }) => ( <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color={'#60B5F9'} />)}}/>
         <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarIcon: ({ focused, color, size }) => ( <Ionicons name={focused ? 'person-circle' : 'person-circle-outline'} size={size} color={'#60B5F9'} />)}}/>
         <Tab.Screen name="Friends" component={FriendsScreen} options={{ tabBarIcon: ({ focused, color, size }) => ( <Ionicons name={focused ? 'people-circle' : 'people-circle-outline'} size={size} color={'#60B5F9'} />)}}/>
       </Tab.Navigator>

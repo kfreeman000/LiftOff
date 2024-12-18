@@ -7,7 +7,7 @@ import styles from './style.js';
 
 const achievements = [
   { id: '1', title: 'Muscle Power', details: 'You increased weight in a workout!', image: require('./assets/mp.jpg') },
-  { id: '2', title: 'Workout Star', details: 'Completed a five-day workout week!', image: require('./assets/wkout.jpeg') },
+  { id: '2', title: 'Workout Star', details: 'Completed a five-day workout week!', image: require('./assets/fiveDay.png') },
   { id: '3', title: 'Goal Setter', details: 'You created your own unique goal!', image: require('./assets/gs.png') },
 ];
 
