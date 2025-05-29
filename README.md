@@ -1,2 +1,12 @@
-Struggling with fitness motivation? LiftOff might just be the boost you need. LiftOff can be used to track your weights from your gym sessions. 
-You'll recieve achievements just by showing up. You can set goals and check them off when completed. The user has a fun experience while they receive encouragement through getting achievements and connecting with friends.
+# LiftOff
+
+Struggling with fitness motivation? **LiftOff** might just be the boost you need! This React application, built with JavaScript, helps you track your weights from gym sessions and stay encouraged on your fitness journey.
+
+---
+
+## Features
+
+* **Weight Tracking:** Easily log and monitor your weights for each gym session.
+* **Achievement System:** Earn exciting achievements just by consistently showing up and working out.
+* **Goal Setting:** Set personalized fitness goals and mark them off as you complete them.
+* **Motivational Experience:** Enjoy a fun and encouraging experience with positive reinforcement through achievements and social connections with friends.
