@@ -1,18 +1,39 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
+    
+  //for profile
+    text: {
+      color: "#56c5f5",
+      textAlign: "center",
+      fontWeight: 'bold',
+      fontFamily: 'Comfortaa-Bold',
+      fontSize: 20,
+      marginTop:10,
+      paddingTop:100,
+      paddingBottom:15,
+      
+    },
+
+    ProfileButtonContainer: {
+      alignItems: "center",
+      justifyContent: "center",
+      margin: 10,
+      width: 300,
+      height: 60,
+      borderRadius: 32,
+      backgroundColor: "#60B5F9",
+      overflow: "hidden"
+    },
+
     button: {
       alignItems: "center",
-      marginTop:10,
-      paddingTop:15,
-      paddingBottom:15,
       marginLeft:30,
       marginRight:30,
       borderRadius:10,
       borderWidth: 1,
       backgroundColor: "#56c5f5",
-      padding: 10,
-       overflow: "hidden"
+      overflow: "hidden"
     },
     achievementItem: {
       flexDirection: 'row',
@@ -41,7 +62,6 @@ const styles = StyleSheet.create({
     buttonContainer: {
       alignItems: "center",
       justifyContent: "center",
-      marginTop: 10,
       width: 300,
       height: 60,
       borderRadius: 32,

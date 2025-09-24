@@ -14,7 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { AchievementsForm, ViewAchievementsForm, CreateGoalForm, ViewGoalsForm, SaveGoalForm } from './achievements.js';
 import RepForm from './reps.js';
 import ProfileForm from './profile.js';
-//import Friends from './friends.js';
+import Friends from './friends.js';
 import styles from './style.js';
 import WorkoutForm from './workout.js';
  

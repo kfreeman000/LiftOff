@@ -51,6 +51,7 @@ const FriendList = () => {
         <TextInput
           style={styles.input}
           placeholder="Search for your friend"
+          placeholderTextColor="grey"
           value={searchQuery}
           onChangeText={setSearchQuery} 
         />
@@ -74,8 +75,9 @@ const FriendList = () => {
 
     },
     input: {
+      color: 'black',  
       height: 40,
-      borderColor: '#ccc',
+      borderColor: 'black',
       borderWidth: 1,
       borderRadius: 5,
       paddingHorizontal: 10,
@@ -88,8 +90,9 @@ const FriendList = () => {
       backgroundColor: 'white',
     },
     friendName: {
+      borderColor: 'black',
       fontSize: 18,
-      color: '#333',
+      color: 'black',
     },
     separator: {
       height: 1,
