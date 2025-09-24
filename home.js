@@ -10,15 +10,15 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from '@expo/vector-icons';
 import { AchievementsForm, ViewAchievementsForm, CreateGoalForm, ViewGoalsForm, SaveGoalForm } from './achievements.js';
 import RepForm from './reps.js';
 import ProfileForm from './profile.js';
-import Friends from './friends.js';
+//import Friends from './friends.js';
 import styles from './style.js';
 import WorkoutForm from './workout.js';
  
-function HomeScreen({navigation}) {
+function HomeScreen({ navigation }) {
   return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', paddingTop: 0 }}>
           <Image source={require('./assets/liftoff_logo.png')} style={{width: 200, height: 200, position: 'absolute', top: 30 }}/>

@@ -1,7 +1,6 @@
 {
   "name": "proj",
   "version": "1.0.0",
-  "main": "expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -9,6 +8,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo/vector-icons": "^15.0.2",
     "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-community/slider": "5.0.1",
     "@react-native-firebase/app": "^21.6.1",
@@ -26,7 +26,8 @@
     "react-native": "0.81.4",
     "react-native-dropdown-picker": "^5.4.6",
     "react-native-safe-area-context": "~5.6.0",
-    "react-native-screens": "~4.16.0"
+    "react-native-screens": "~4.16.0",
+    "wonka": "^6.3.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
