@@ -16,7 +16,7 @@ import RepForm from './reps.js';
 import ProfileForm from './profile.js';
 import Friends from './friends.js';
 import styles from './style.js';
-import WorkoutForm from './workout.js';
+import AddWorkout from './addWorkout.js';
  
 function HomeScreen({ navigation }) {
   return (
@@ -58,7 +58,7 @@ function RepScreen() {
  
 function WorkoutScreen() {
   return (
-      <WorkoutForm />
+      <AddWorkout />
   );
 }
 
