@@ -40,9 +40,9 @@ const ProfileScreen = () => {
 
     try {
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
+        mediaTypes: ImagePicker.Images,  // img only
+        allowsEditing: true,  // can crop pic
+        aspect: [1, 1],  // make it square 
         quality: 1,
       });
 
@@ -107,7 +107,7 @@ const ProfileScreen = () => {
           <Text style={styles.editText}>Birthday</Text>
           <TextInput style={styles.input} value={dob} onChangeText={setDob} placeholder="Birthday" />
 
-          {/* Buttons stacked in column */}
+          
           <View style={{ marginTop: 30, alignItems: 'center' }}>
             <TouchableOpacity style={[styles.ProfileButtonContainer, { marginBottom: 10 }]} onPress={saveProfile}>
               <Text style={styles.buttonText}>Save Changes</Text>
