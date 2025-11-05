@@ -44,6 +44,8 @@ const styles = StyleSheet.create({
     overflow: "hidden"
   },
 
+
+
   achievementItem: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -37,10 +37,11 @@ function HomeScreen({ navigation }) {
         </View>
       );
 }
+// component = function name 
 
 function ProfileScreen({navigation}) {
   return (
-    <ProfileForm />
+    <ProfileForm /> // this is default export name 
   );
 }
 
@@ -98,7 +99,7 @@ const AchievementsStack = createNativeStackNavigator();
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator screenOptions={{headerTintColor: '#60B5F9'}}>
-        <HomeStack.Screen name="Home" component={HomeScreen} options={{ title: '' }}/>
+        <HomeStack.Screen name="Home" component={HomeScreen} options={{ title: '' }}/>  
         <HomeStack.Screen name="Reps" component={RepScreen} options={{ title: '' }}/>
         <HomeStack.Screen name="Submit" component={WorkoutScreen} />
         <HomeStack.Screen name="Achievements" component={AchievementsStackScreen} options={{ title: '' }}/>
