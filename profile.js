@@ -2,7 +2,7 @@
 // can edit profile and settings, update profile pic, and can logout
 
 import React, { useState } from 'react';
-import { View, Image, TouchableOpacity, Alert, ScrollView, Modal, Text, TextInput } from 'react-native';
+import { View, Image, TouchableOpacity, Alert, ScrollView, Switch, Modal, Text, TextInput } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import styles from './style.js';
 
@@ -10,15 +10,14 @@ const ProfileScreen = () => {
   const defaultPic = Image.resolveAssetSource(require('./assets/blankProfilePic.webp')).uri;
   const [pic, setPic] = useState({ uri: defaultPic });
 
-  const [name, setName] = useState('Jill Doe');
-  const [email, setEmail] = useState('johndoe@example.com');
-  const [height, setHeight] = useState("6'0");
-  const [weight, setWeight] = useState('180 lbs');
-  const [gender, setGender] = useState('Female');
-  const [dob, setDob] = useState('12/15/2000');
-  const [notificiations, setNot] = useState('ON');
-  const [publicP, setPublicP] = useState('public');
-  const [units, setUnits] = useState('pounds');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [height, setHeight] = useState('');
+  const [weight, setWeight] = useState('');
+  const [gender, setGender] = useState('');
+  const [dob, setDob] = useState('');
+  const [publicP, setPublicP] = useState(false);  // true = public profile
+  const [units, setUnits] = useState(true);   // true = lbs
   const [isProfileModalVisible, setProfileModalVisible] = useState(false);
   const [isSettingsModalVisible, setSettingsModalVisible] = useState(false);
 
@@ -92,22 +91,22 @@ const ProfileScreen = () => {
           <Text style={styles.text}>Edit Profile</Text>
 
           <Text style={styles.editText}>Name</Text>
-          <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Name" />
+          <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={name} onChangeText={setName} placeholder="Name" />
 
           <Text style={styles.editText}>Email</Text>
-          <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder="Email" />
+          <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={email} onChangeText={setEmail} placeholder="Email" />
 
           <Text style={styles.editText}>Height</Text>
-          <TextInput style={styles.input} value={height} keyboardType='numeric' onChangeText={setHeight} placeholder="Height" />
+          <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={height} keyboardType='numeric' onChangeText={setHeight} placeholder="Height" />
 
           <Text style={styles.editText}>Weight</Text>
-          <TextInput style={styles.input} value={weight} keyboardType='numeric' onChangeText={setWeight} placeholder="Weight" />
+          <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={weight} keyboardType='numeric' onChangeText={setWeight} placeholder="Weight" />
 
           <Text style={styles.editText}>Gender</Text>
-          <TextInput style={styles.input} value={gender} onChangeText={setGender} placeholder="Gender" />
+          <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={gender} onChangeText={setGender} placeholder="Gender" />
 
           <Text style={styles.editText}>Birthday</Text>
-          <TextInput style={styles.input} value={dob} onChangeText={setDob} placeholder="Birthday" />
+          <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={dob} onChangeText={setDob} placeholder="Birthday" />
 
           
           <View style={{ marginTop: 30, alignItems: 'center' }}>
@@ -127,14 +126,32 @@ const ProfileScreen = () => {
         <ScrollView contentContainerStyle={{ padding: 20 }}>
           <Text style={styles.text}>Edit Settings</Text>
 
-          <Text style={styles.editText}>Notifications</Text> {/*prob delete later*/}
-          <TextInput style={styles.input} value={notificiations} onChangeText={setNot} placeholder="Notifications" />
-
           <Text style={styles.editText}>Privacy</Text>
-          <TextInput style={styles.input} value={publicP} onChangeText={setPublicP} placeholder="Privacy" />
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
+          <Switch
+            value={publicP}               // Boolean state
+            onValueChange={setPublicP}    // Toggles true/false
+            trackColor={{ false: '#ccc', true: '#4CAF50' }} // Gray for off, green for on
+            thumbColor={publicP ? '#fff' : '#f4f3f4'}        // Small circle color
+          />
+          <Text style={{ marginLeft: 10 }}>
+            {publicP ? 'Public' : 'Private'}
+          </Text>
+          </View>
 
           <Text style={styles.editText}>Units</Text>
-          <TextInput style={styles.input} value={units} onChangeText={setUnits} placeholder="Units" />
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
+            <Switch
+              value={units}                // true = lbs, false = kg
+              onValueChange={setUnits}    
+              trackColor={{ false: '#ccc', true: '#4CAF50' }}
+              thumbColor={units ? '#fff' : '#f4f3f4'}
+            />
+            <Text style={{ marginLeft: 10 }}>
+              {units ? 'lbs' : 'kg'}
+            </Text>
+          </View>
+
 
           <View style={{ marginTop: 30, alignItems: 'center' }}>
             <TouchableOpacity style={[styles.ProfileButtonContainer, { marginBottom: 10 }]} onPress={saveSettings}>

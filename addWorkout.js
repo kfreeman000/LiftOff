@@ -1,11 +1,12 @@
 
 import { addDoc, collection } from 'firebase/firestore';
 import React, { useState } from 'react';
-import { Button, StyleSheet, Text, TextInput, View, Alert } from 'react-native';
+import { Button, StyleSheet, Text, TextInput, View, Alert} from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { db } from './firebase'; // Your firestore config
 
 const AddWorkout = () => {
-  const [workout, setWorkout] = useState('');
+  const [workout, setWorkout] = useState("Bench");
   const [reps, setReps] = useState('');
   const [sets, setSets] = useState('');
   const [weight, setWeight] = useState('');
@@ -38,22 +39,21 @@ const AddWorkout = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Add New Workout</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Workout (e.g., bench, squats)"
-        value={workout}
-        onChangeText={setWorkout}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Reps"
-        value={reps}
-        onChangeText={setReps}
-        keyboardType="numeric"
-      />
+      <Picker
+              selectedValue={workout}
+              onValueChange={(itemValue) => setWorkout(itemValue)}
+              style={{ width: '100%', marginVertical: 10 }}
+              itemStyle={{ color: 'black', fontFamily: 'Comfortaa-Bold' }}
+              >
+                <Picker.Item  label="Bench" value="Bench" />
+                <Picker.Item  label="Squat" value="Squat" />
+                <Picker.Item  label="Deadlift" value="Deadlift" />
+                <Picker.Item  label="Row" value="Row" />
+      </Picker>
       <TextInput
         style={styles.input}
         placeholder="Sets"
+        placeholderTextColor="#BFBFBF"
         value={sets}
         onChangeText={setSets}
         keyboardType="numeric"
@@ -61,6 +61,7 @@ const AddWorkout = () => {
       <TextInput
         style={styles.input}
         placeholder="Weight"
+        placeholderTextColor="#BFBFBF"
         value={weight}
         onChangeText={setWeight}
         keyboardType="numeric"
@@ -68,6 +69,7 @@ const AddWorkout = () => {
       <TextInput
         style={styles.input}
         placeholder="Comments"
+        placeholderTextColor="#BFBFBF"
         value={comments}
         onChangeText={setComments}
       />

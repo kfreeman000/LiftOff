@@ -8,7 +8,7 @@ import { SwipeListView } from 'react-native-swipe-list-view';
        
         const WorkoutsList = () => {
           const [workouts, setWorkouts] = useState([]);
-          const [selectedExercise, setSelectedExercise] = useState('Squat');
+          const [selectedExercise, setSelectedExercise] = useState('Bench');
          
         
           useEffect(() => {
@@ -87,7 +87,7 @@ import { SwipeListView } from 'react-native-swipe-list-view';
               style={{ width: '100%', marginVertical: 10 }}
               itemStyle={{ color: 'black', fontFamily: 'Comfortaa-Bold' }}
               >
-                <Picker.Item  label="Bench" value="bench" />
+                <Picker.Item  label="Bench" value="Bench" />
                 <Picker.Item  label="Squat" value="Squat" />
                 <Picker.Item  label="Deadlift" value="Deadlift" />
                 <Picker.Item  label="Row" value="Row" />
