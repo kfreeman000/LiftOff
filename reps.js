@@ -1,28 +1,28 @@
 
 import { Picker } from '@react-native-picker/picker';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import {StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { db } from './firebase'; 
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
+import { db } from './firebase';
 import { SwipeListView } from 'react-native-swipe-list-view';
        
         const WorkoutsList = () => {
           const [workouts, setWorkouts] = useState([]);
           const [selectedExercise, setSelectedExercise] = useState('Squat');
          
-          // Fetch workouts data on component mount
+        
           useEffect(() => {
             const fetchWorkouts = async () => {
               try {
-                const workoutRef = collection(db, 'workouts');
-                const querySnapshot = await getDocs(workoutRef);
+                const workoutRef = collection(db, 'workouts'); // ref to collection "workouts" in imported db 
+                const querySnapshot = await getDocs(workoutRef); // getDocs sends request to fireStore then returns an object with 
                
                 const workoutsData = querySnapshot.docs.map(doc => {
                   const data = doc.data();
                   return {
                     id: doc.id,
                     ...data,
-                    date: data.date ? data.date.toDate() : null, // Safely convert date
+                    date: data.date ? data.date.toDate() : null, 
                   };
                 });
                
@@ -33,7 +33,7 @@ import { SwipeListView } from 'react-native-swipe-list-view';
             };
        
             fetchWorkouts();
-          }, []);
+          }, []);  // run fetchworkouts 
 
           const handleDelete = async (rowKey) => {
           Alert.alert('Delete Workout', 'Are you sure you want to delete this workout?', [
@@ -61,6 +61,7 @@ import { SwipeListView } from 'react-native-swipe-list-view';
             <View style={styles.item}>
               <Text style={styles.itemText}>Workout: {item.workout}</Text>
               <Text style={styles.itemText}>Reps: {item.reps}</Text>
+              <Text style={styles.itemText}>Sets: {item.sets}</Text>
               <Text style={styles.itemText}>Weight: {item.weight}</Text>
               <Text style={styles.itemText}>Date: {item.date ? item.date.toLocaleDateString() : 'No date'}</Text>
             </View>
@@ -87,20 +88,18 @@ import { SwipeListView } from 'react-native-swipe-list-view';
               itemStyle={{ color: 'black', fontFamily: 'Comfortaa-Bold' }}
               >
                 <Picker.Item  label="Bench" value="bench" />
-                <Picker.Item  label="Squat" value="squats" />
-                <Picker.Item  label="Deadlift" value="deadlift" />
-                <Picker.Item  label="RDL" value="rdl" />
+                <Picker.Item  label="Squat" value="Squat" />
+                <Picker.Item  label="Deadlift" value="Deadlift" />
+                <Picker.Item  label="Row" value="Row" />
               </Picker>
             
               <SwipeListView
                 data={filteredWorkouts}
-                keyExtractor={item => item.id}
-                renderItem={({ item }) => {
-                  renderHiddenItem={renderHiddenItem}
-                  rightOpenValue={-150} // Amount row opens to reveal hidden buttons
-                  disableRightSwipe
-                  // Format the date if it's available
-                  const formattedDate = item.date ? item.date.toLocaleDateString() : 'No date"
+                keyExtractor={(item) => item.id}
+                renderItem={renderItem}
+                renderHiddenItem={renderHiddenItem}
+                rightOpenValue={-150}
+                disableRightSwipe
               />
             </View>
           );

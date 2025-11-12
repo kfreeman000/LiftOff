@@ -1,3 +1,6 @@
+
+// can edit profile and settings, update profile pic, and can logout
+
 import React, { useState } from 'react';
 import { View, Image, TouchableOpacity, Alert, ScrollView, Modal, Text, TextInput } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -14,7 +17,6 @@ const ProfileScreen = () => {
   const [gender, setGender] = useState('Female');
   const [dob, setDob] = useState('12/15/2000');
   const [notificiations, setNot] = useState('ON');
-  const [lang, setLang] = useState('English');
   const [publicP, setPublicP] = useState('public');
   const [units, setUnits] = useState('pounds');
   const [isProfileModalVisible, setProfileModalVisible] = useState(false);
@@ -22,12 +24,12 @@ const ProfileScreen = () => {
 
   const saveProfile = () => {
     setProfileModalVisible(false);
-    Alert.alert("Success", "Profile updated!");
+    Alert.alert("success", "profile updated!");
   };
 
   const saveSettings = () => {
     setSettingsModalVisible(false);
-    Alert.alert("Success", "Settings updated!");
+    Alert.alert("success", "settings updated!");
   };
 
   const updatePic = async () => {
@@ -96,10 +98,10 @@ const ProfileScreen = () => {
           <TextInput style={styles.input} value={email} onChangeText={setEmail} placeholder="Email" />
 
           <Text style={styles.editText}>Height</Text>
-          <TextInput style={styles.input} value={height} onChangeText={setHeight} placeholder="Height" />
+          <TextInput style={styles.input} value={height} keyboardType='numeric' onChangeText={setHeight} placeholder="Height" />
 
           <Text style={styles.editText}>Weight</Text>
-          <TextInput style={styles.input} value={weight} onChangeText={setWeight} placeholder="Weight" />
+          <TextInput style={styles.input} value={weight} keyboardType='numeric' onChangeText={setWeight} placeholder="Weight" />
 
           <Text style={styles.editText}>Gender</Text>
           <TextInput style={styles.input} value={gender} onChangeText={setGender} placeholder="Gender" />
@@ -125,11 +127,8 @@ const ProfileScreen = () => {
         <ScrollView contentContainerStyle={{ padding: 20 }}>
           <Text style={styles.text}>Edit Settings</Text>
 
-          <Text style={styles.editText}>Notifications</Text>
+          <Text style={styles.editText}>Notifications</Text> {/*prob delete later*/}
           <TextInput style={styles.input} value={notificiations} onChangeText={setNot} placeholder="Notifications" />
-
-          <Text style={styles.editText}>Language</Text>
-          <TextInput style={styles.input} value={lang} onChangeText={setLang} placeholder="Language" />
 
           <Text style={styles.editText}>Privacy</Text>
           <TextInput style={styles.input} value={publicP} onChangeText={setPublicP} placeholder="Privacy" />

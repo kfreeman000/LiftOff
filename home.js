@@ -1,4 +1,5 @@
 
+// home screen with two different forms of navigation 
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
