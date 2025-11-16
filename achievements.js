@@ -3,6 +3,8 @@ import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View, FlatList, B
 import { firestore } from './firebase.js'; 
 import { collection, query, getDocs, orderBy, addDoc, serverTimestamp } from 'firebase/firestore'; 
 import styles from './style.js'; 
+import { db } from './firebase';
+import { SwipeListView } from 'react-native-swipe-list-view';
 
 
 const achievements = [
@@ -91,6 +93,7 @@ const ViewAchievementsForm = () => {
         data={achievements}
         keyExtractor={(item) => item.id}
         renderItem={renderCard}
+        
       />
     </View>
   );
@@ -98,7 +101,7 @@ const ViewAchievementsForm = () => {
 
 const addGoal = async (goal) => {
   try {
-    await addDoc(collection(firestore, 'goals'), {
+    await addDoc(collection(db, 'goals'), {
       goal,
       timestamp: serverTimestamp(),
     });
@@ -121,7 +124,6 @@ const CreateGoalForm = ({ navigation }) => {
       await addGoal(goal); // Save goal to Firestore
       Alert.alert('Success', 'Goal saved!');
       setGoal(''); // Clear input
-      navigation.navigate('View Goals'); // Navigate to the View Goals screen
     } catch (e) {
       Alert.alert('Error', e.message);
     }
@@ -148,7 +150,7 @@ const ViewGoalsForm = () => {
   useEffect(() => {
     const fetchGoals = async () => {
       try {
-        const q = query(collection(firestore, 'goals'), orderBy('timestamp', 'desc'));
+        const q = query(collection(db, 'goals'), orderBy('timestamp', 'desc'));
         const querySnapshot = await getDocs(q);
         const goalsArray = querySnapshot.docs.map((doc) => doc.data().goal);
         setGoals(goalsArray);
@@ -162,11 +164,11 @@ const ViewGoalsForm = () => {
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Check out your goals</Text>
-      <FlatList
+      
+      <FlatList 
         data={goals}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => <Text style={styles.goalItem}>{item}</Text>}
+        renderItem={({ item }) => <Text style={styles.item}>{item}</Text>}
       />
     </View>
   );

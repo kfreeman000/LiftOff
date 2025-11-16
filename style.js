@@ -44,7 +44,16 @@ const styles = StyleSheet.create({
     overflow: "hidden"
   },
 
-
+// for goals
+item: {
+            padding: 10,
+            marginBottom: 15,
+            backgroundColor: '#f0f0f0',
+            borderRadius: 5,
+          },
+          itemText: {
+            fontSize: 16,
+          },
 
   achievementItem: {
     flexDirection: 'row',

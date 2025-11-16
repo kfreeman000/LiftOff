@@ -1,3 +1,4 @@
+// submit workouts button 
 
 import { addDoc, collection } from 'firebase/firestore';
 import React, { useState } from 'react';
@@ -50,6 +51,14 @@ const AddWorkout = () => {
                 <Picker.Item  label="Deadlift" value="Deadlift" />
                 <Picker.Item  label="Row" value="Row" />
       </Picker>
+      <TextInput
+        style={styles.input}
+        placeholder="Reps"
+        placeholderTextColor="#BFBFBF"
+        value={reps}
+        onChangeText={setReps}
+        keyboardType="numeric"
+      />
       <TextInput
         style={styles.input}
         placeholder="Sets"

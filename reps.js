@@ -1,3 +1,4 @@
+// view workouts button 
 
 import { Picker } from '@react-native-picker/picker';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
