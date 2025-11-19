@@ -81,7 +81,7 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 
           return (
             <View style={styles.container}>
-              <Text style={styles.header}>Workouts List</Text>
+              <Text style={styles.header}>Workout list🏋🏽‍♀️</Text>
               <Picker
               selectedValue={selectedExercise}
               onValueChange={(itemValue) => setSelectedExercise(itemValue)}

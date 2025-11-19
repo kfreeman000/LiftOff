@@ -39,7 +39,7 @@ const AddWorkout = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Add New Workout</Text>
+      <Text style={styles.header}>Add your workout🏅</Text>
       <Picker
               selectedValue={workout}
               onValueChange={(itemValue) => setWorkout(itemValue)}
