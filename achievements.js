@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View, FlatList, Button, Animated, Alert } from 'react-native';
+import { Image, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, FlatList, Animated, Alert, Keyboard } from 'react-native';
 import { firestore } from './firebase.js'; 
 import { collection, query, getDocs, orderBy, addDoc, serverTimestamp } from 'firebase/firestore'; 
 import styles from './style.js'; 
@@ -113,6 +113,7 @@ const addGoal = async (goal) => {
 
 const CreateGoalForm = ({ navigation }) => {
   const [goal, setGoal] = useState('');
+  const inputRef = useRef(null);
 
   const saveGoal = async () => {
     if (!goal.trim()) {
@@ -122,24 +123,31 @@ const CreateGoalForm = ({ navigation }) => {
 
     try {
       await addGoal(goal); // Save goal to Firestore
-      Alert.alert('Success', 'Goal saved!');
+      Alert.alert('success', 'goal saved!✅');
       setGoal(''); // Clear input
+      inputRef.current?.blur();
     } catch (e) {
       Alert.alert('Error', e.message);
     }
   };
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 15, marginBottom: 300 }}>
       <Text>Create a goal of your own</Text>
       <TextInput
+        ref={inputRef}
         style={styles.input}
-        placeholder="Enter your goal"
+        placeholder="Squat 200lbs"
+        placeholderTextColor="grey"
         value={goal}
         onChangeText={setGoal}
       />
-      <Button title="Save Goal" onPress={saveGoal} />
+      <TouchableOpacity style={styles.buttonContainer} onPress={saveGoal} activeOpacity={0.5}>
+      <Text style={styles.buttonText}>save goal</Text>
+      </TouchableOpacity>
     </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -165,10 +173,13 @@ const ViewGoalsForm = () => {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       
-      <FlatList 
+      <SwipeListView 
+        style={styles.container}
         data={goals}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => <Text style={styles.item}>{item}</Text>}
+        rightOpenValue={-150}
+        disableRightSwipe
       />
     </View>
   );
