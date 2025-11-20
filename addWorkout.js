@@ -1,27 +1,36 @@
 // submit workouts button 
 
 import { addDoc, collection } from 'firebase/firestore';
-import React, { useState } from 'react';
-import { Button, StyleSheet, Text, TextInput, View, Alert} from 'react-native';
+import React, { useState, useRef } from 'react';
+import { Alert, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, View} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { db } from './firebase'; // Your firestore config
+import styles from './style';
 
 const AddWorkout = () => {
-  const [workout, setWorkout] = useState("Bench");
+  const [workout, setWorkout] = useState('');
   const [reps, setReps] = useState('');
   const [sets, setSets] = useState('');
   const [weight, setWeight] = useState('');
   const [comments, setComments] = useState('');
+  const inputRef = useRef(null);
   
 
   const handleAddWorkout = async () => {
+    if (!weight.trim()) {
+          Alert.alert('please log weight used ❌');
+          return;
+    }      
+  const repsValue = reps.trim() ? parseInt(reps, 10) : 'unknown';
+  const setsValue = sets.trim() ? parseInt(sets, 10) : 'unknown';
+
     try {
       await addDoc(collection(db, 'workouts'), {
-        workout,
-        reps: parseInt(reps, 10),  // parseInt takes a string and turns it into a base-10 integer
-        sets: parseInt(sets, 10),
-        weight: parseInt(weight, 10),
-        comments,
+      workout,
+      reps: repsValue,
+      sets: setsValue,
+      weight: parseInt(weight, 10),
+      comments,
         date: new Date(),
       });
       Alert.alert("workout stored 🔥");
@@ -38,8 +47,11 @@ const AddWorkout = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <View style={{ flex: 1, padding: 15, backgroundColor: 'white'}}>
       <Text style={styles.header}>Add your workout🏅</Text>
+    <View style={styles.submitContainer}>
+      
       <Picker
               selectedValue={workout}
               onValueChange={(itemValue) => setWorkout(itemValue)}
@@ -52,6 +64,7 @@ const AddWorkout = () => {
                 <Picker.Item  label="Row" value="Row" />
       </Picker>
       <TextInput
+        ref={inputRef}
         style={styles.input}
         placeholder="Reps"
         placeholderTextColor="#BFBFBF"
@@ -60,6 +73,7 @@ const AddWorkout = () => {
         keyboardType="numeric"
       />
       <TextInput
+        ref={inputRef}
         style={styles.input}
         placeholder="Sets"
         placeholderTextColor="#BFBFBF"
@@ -68,6 +82,7 @@ const AddWorkout = () => {
         keyboardType="numeric"
       />
       <TextInput
+        ref={inputRef}
         style={styles.input}
         placeholder="Weight"
         placeholderTextColor="#BFBFBF"
@@ -76,34 +91,20 @@ const AddWorkout = () => {
         keyboardType="numeric"
       />
       <TextInput
+        ref={inputRef}
         style={styles.input}
         placeholder="Comments"
         placeholderTextColor="#BFBFBF"
         value={comments}
         onChangeText={setComments}
       />
-      <Button title="Add Workout" onPress={handleAddWorkout} />
+      <TouchableOpacity style={styles.buttonContainer} onPress={handleAddWorkout}>
+        <Text style={styles.buttonText}>submit</Text>
+      </TouchableOpacity>  
     </View>
+    </View>
+    </TouchableWithoutFeedback>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-  },
-});
 
 export default AddWorkout;

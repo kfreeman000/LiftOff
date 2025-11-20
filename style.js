@@ -43,23 +43,38 @@ const styles = StyleSheet.create({
     backgroundColor: "#56c5f5",
     overflow: "hidden"
   },
+// for submit workout
+submitContainer: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    paddingBottom: 200,
+    
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'left',
+  },
+
 
 // for goals
 item: {
-            padding: 10,
-            marginBottom: 15,
-            backgroundColor: '#f0f0f0',
-            borderRadius: 5,
-          },
-          itemText: {
-            fontSize: 16,
-          },
-
-  achievementItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 10,
-  },
+  padding: 10,
+  marginBottom: 15,
+  backgroundColor: '#f0f0f0',
+  borderRadius: 5,
+},
+itemText: {
+  fontSize: 16,
+},
+achievementItem: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginVertical: 10,
+},
   achievementImage: {
     width: 50,
     height: 50,
@@ -103,7 +118,14 @@ item: {
     borderRadius: 25,
     backgroundColor: "#60B5F9",
     overflow: "hidden"
-  }
+  },
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    
+  },
 });
 
 export default styles;

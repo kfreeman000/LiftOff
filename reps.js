@@ -3,13 +3,20 @@
 import { Picker } from '@react-native-picker/picker';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
+import { Alert, Modal, StyleSheet, Text, TouchableOpacity, View, } from 'react-native';
 import { db } from './firebase';
 import { SwipeListView } from 'react-native-swipe-list-view';
        
         const WorkoutsList = () => {
           const [workouts, setWorkouts] = useState([]);
           const [selectedExercise, setSelectedExercise] = useState('Bench');
+
+          const [editModalVisible, setEditModalVisible] = useState(false);
+          const [editingWorkout, setEditingWorkout] = useState(null);
+          const [editReps, setEditReps] = useState('');
+          const [editSets, setEditSets] = useState('');
+          const [editWeight, setEditWeight] = useState('');
+          const [editComments, setEditComments] = useState('');
          
         
           useEffect(() => {
@@ -51,10 +58,14 @@ import { SwipeListView } from 'react-native-swipe-list-view';
     ]);
   };
 
-          const handleEdit = (item) => {
-            Alert.alert('Edit Workout', `Workout: ${item.workout}`);
-            // TODO: Open edit modal or navigate to edit screen
-          };
+    const handleEdit = (item) => {
+    setEditingWorkout(item);
+    setEditReps(item.reps?.toString() || '');
+    setEditSets(item.sets?.toString() || '');
+    setEditWeight(item.weight?.toString() || '');
+    setEditComments(item.comments || '');
+    setEditModalVisible(true);
+  };
 
           const filteredWorkouts = workouts.filter(workout => workout.workout === selectedExercise);
 
@@ -64,6 +75,7 @@ import { SwipeListView } from 'react-native-swipe-list-view';
               <Text style={styles.itemText}>Reps: {item.reps}</Text>
               <Text style={styles.itemText}>Sets: {item.sets}</Text>
               <Text style={styles.itemText}>Weight: {item.weight}</Text>
+              <Text style={styles.itemText}>Comments: {item.comments}</Text>
               <Text style={styles.itemText}>Date: {item.date ? item.date.toLocaleDateString() : 'No date'}</Text>
             </View>
           );
