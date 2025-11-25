@@ -1,6 +1,7 @@
 // WorkoutsList.js
+
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, Modal, Button } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from './firebase';
@@ -116,27 +117,27 @@ const WorkoutsList = () => {
   );
 
   const renderHiddenItem = ({ item }) => (
-  <View style={styles.rowBack}>
-    <TouchableOpacity 
-      style={[styles.backButtonFull, styles.editButton]} 
-      onPress={() => handleEdit(item)}
-    >
-      <Text style={styles.backButtonText}>Edit</Text>
-    </TouchableOpacity>
+    <View style={styles.rowBack}>
+      <TouchableOpacity 
+        style={[styles.backButtonFull, styles.editButton]}
+        onPress={() => handleEdit(item)}
+      >
+        <Text style={styles.backButtonText}>Edit</Text>
+      </TouchableOpacity>
 
-    <TouchableOpacity 
-      style={[styles.backButtonFull, styles.deleteButton]} 
-      onPress={() => handleDelete(item.id)}
-    >
-      <Text style={styles.backButtonText}>Delete</Text>
-    </TouchableOpacity>
-  </View>
-);
-
+      <TouchableOpacity 
+        style={[styles.backButtonFull, styles.deleteButton]}
+        onPress={() => handleDelete(item.id)}
+      >
+        <Text style={styles.backButtonText}>Delete</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Workout list🏋🏽‍♀️</Text>
+
       <Picker
         selectedValue={selectedExercise}
         onValueChange={(itemValue) => setSelectedExercise(itemValue)}
@@ -163,22 +164,24 @@ const WorkoutsList = () => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={{ fontWeight: 'bold', marginBottom: 10 }}>Edit Workout: {editingWorkout?.workout}</Text>
+            
             <TextInput placeholder="Reps" value={editReps} onChangeText={setEditReps} keyboardType="numeric" style={styles.input} />
             <TextInput placeholder="Sets" value={editSets} onChangeText={setEditSets} keyboardType="numeric" style={styles.input} />
             <TextInput placeholder="Weight" value={editWeight} onChangeText={setEditWeight} keyboardType="numeric" style={styles.input} />
             <TextInput placeholder="Comments" value={editComments} onChangeText={setEditComments} style={styles.input} />
-            <View style={styles.modalButtons}>
-            <TouchableOpacity style={styles.buttonContainer} onPress={saveEdit}>
-              <Text style={styles.buttonText}>Update</Text>
-            </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={[styles.buttonContainer, { backgroundColor: '#FF5757'}]} 
-              onPress={() => setEditModalVisible(false)}
-            >
-              <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity style={styles.buttonContainer} onPress={saveEdit}>
+                <Text style={styles.buttonText}>Update</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={[styles.buttonContainer, { backgroundColor: '#FF5757' }]}
+                onPress={() => setEditModalVisible(false)}
+              >
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
 
           </View>
         </View>
@@ -189,57 +192,45 @@ const WorkoutsList = () => {
 
 const styles = StyleSheet.create({
   modalButtons: {
-  marginTop: 20,
-  alignItems: "center",
-  justifyContent: "center",
-  gap: 15, // spacing between update/cancel buttons
-},
-rowBack: {
-  flex: 1,
-  flexDirection: "column",
-  justifyContent: "space-between",
-  height: "100%",
-  alignItems: "flex-end",
-},
-backButtonFull: {
-  width: 150,            // must match your rightOpenValue
-  height: "50%",         // edit top half / delete bottom half
-  justifyContent: "center",
-  alignItems: "center",
-},
-backButtonText: {
-  color: "#fff",
-  fontWeight: "600",
-  fontSize: 16,
-},
-rightActions: {
-  width: 90,                 // controls swipe width
-  height: '100%',            // make it fill the row height
-  flexDirection: 'column',   // STACK vertically
-  borderTopRightRadius: 12,
-  borderBottomRightRadius: 12,
-  overflow: 'hidden',        // required for rounded corners to work
-},
+    marginTop: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 15,
+  },
 
-editButton: {
-  flex: 1,                   // split space evenly
-  backgroundColor: '#4CAF50',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
+  rowBack: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    paddingBottom: 15
+  },
 
-deleteButton: {
-  flex: 1,
-  backgroundColor: '#F44336',
-  justifyContent: 'center',
-  alignItems: 'center',
-},
+  backButtonFull: {
+    width: 150,
+    height: "50%",
+    justifyContent: "center",
+    alignItems: "center",
+    borderTopRightRadius: 12,
+    borderBottomLeftRadius: 12,
+    borderTopLeftRadius: 12,
+    borderBottomRightRadius: 12,
+    overflow: "hidden",
+  },
 
-actionText: {
-  color: 'white',
-  fontWeight: 'bold',
-},
+  backButtonText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 16,
+  },
 
+  editButton: {
+    backgroundColor: "#60B5F9",
+  },
+
+  deleteButton: {
+    backgroundColor: "#F44336",
+  },
 
   buttonContainer: {
     alignItems: "center",
@@ -249,8 +240,8 @@ actionText: {
     borderRadius: 32,
     backgroundColor: "#60B5F9",
     paddingHorizontal: 20,
-    
   },
+
   buttonText: {
     fontFamily: 'Comfortaa-Bold',
     color: 'white',
@@ -262,12 +253,10 @@ actionText: {
   header: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 },
   item: { padding: 10, marginBottom: 15, backgroundColor: '#f0f0f0', borderRadius: 5 },
   itemText: { fontSize: 16 },
-  rowBack: { flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 15 },
-  backButton: { width: 75, justifyContent: 'center', alignItems: 'center', borderRadius: 5, marginLeft: 5 },
-  editButton: { backgroundColor: '#60B5F9' },
-  deleteButton: { backgroundColor: 'red' },
-  modalOverlay: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)',  },
+
+  modalOverlay: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0,0,0,0.5)' },
   modalContent: { width: '80%', backgroundColor: '#fff', padding: 20, borderRadius: 10 },
+
   input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 5, padding: 10, marginBottom: 10 },
 });
 
