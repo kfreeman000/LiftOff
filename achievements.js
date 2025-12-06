@@ -174,7 +174,7 @@ const ViewGoalsForm = () => {
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       
       <SwipeListView 
-        style={styles.container}
+        contentContainerStyle={styles.listContentContainer}
         data={goals}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => <Text style={styles.item}>{item}</Text>}

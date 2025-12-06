@@ -126,6 +126,13 @@ achievementItem: {
     alignItems: 'center',
     
   },
+  listContentContainer: {
+
+    padding: 20,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    
+  },
 });
 
 export default styles;
