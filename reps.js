@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc, updateDoc, query, orderBy } from 'firebase/firestore';
 import { db } from './firebase';
 import { SwipeListView } from 'react-native-swipe-list-view';
 
@@ -20,31 +20,34 @@ const WorkoutsList = () => {
 
   // Fetch workouts from Firestore
   useEffect(() => {
-    const fetchWorkouts = async () => {
-      try {
-        const workoutRef = collection(db, 'workouts');
-        const querySnapshot = await getDocs(workoutRef);
+  const fetchWorkouts = async () => {
+    try {
+      const workoutRef = collection(db, 'workouts');
 
-        const workoutsData = querySnapshot.docs.map(doc => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            ...data,
-            date: data.date ? data.date.toDate() : null,
-            reps: data.reps ?? 'unknown',
-            sets: data.sets ?? 'unknown',
-            weight: data.weight ?? 'unknown',
-          };
-        });
+      // 🔥 Sort by date descending — newest first!
+      const q = query(workoutRef, orderBy('date', 'desc'));
+      const querySnapshot = await getDocs(q);
 
-        setWorkouts(workoutsData);
-      } catch (error) {
-        console.error("Error fetching workouts: ", error);
-      }
-    };
+      const workoutsData = querySnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          date: data.date ? data.date.toDate() : null,
+          reps: data.reps ?? 'unknown',
+          sets: data.sets ?? 'unknown',
+          weight: data.weight ?? 'unknown',
+        };
+      });
 
-    fetchWorkouts();
-  }, []);
+      setWorkouts(workoutsData);
+    } catch (error) {
+      console.error("Error fetching workouts: ", error);
+    }
+  };
+
+  fetchWorkouts();
+}, []);
 
   // Delete workout
   const handleDelete = async (rowKey) => {

@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Image, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, FlatList, Animated, Alert, Keyboard } from 'react-native';
-import { firestore } from './firebase.js'; 
+import { Image, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, FlatList, Animated, Alert, Keyboard, Modal } from 'react-native';
+import { db } from './firebase';
 import { collection, query, getDocs, orderBy, addDoc, serverTimestamp } from 'firebase/firestore'; 
 import styles from './style.js'; 
-import { db } from './firebase';
 import { SwipeListView } from 'react-native-swipe-list-view';
 
 
@@ -33,7 +32,7 @@ const AchievementsForm = ({ navigation }) => {
   );
 };
 
-// View Achievements Form with flip animation for each achievement
+// view achievemnets button with flip animation for each achievement
 const ViewAchievementsForm = () => {
   const flipAnim = useRef({}).current;
   const [flippedCards, setFlippedCards] = useState({});
@@ -99,6 +98,7 @@ const ViewAchievementsForm = () => {
   );
 };
 
+// create goal button
 const addGoal = async (goal) => {
   try {
     await addDoc(collection(db, 'goals'), {
@@ -111,7 +111,7 @@ const addGoal = async (goal) => {
 };
 
 
-const CreateGoalForm = ({ navigation }) => {
+const CreateGoalForm = () => {
   const [goal, setGoal] = useState('');
   const inputRef = useRef(null);
 
@@ -151,38 +151,105 @@ const CreateGoalForm = ({ navigation }) => {
   );
 };
 
-
+// view goals button
 const ViewGoalsForm = () => {
   const [goals, setGoals] = useState([]);
+  const [selectedGoal, setSelectedGoal] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchGoals = async () => {
       try {
-        const q = query(collection(db, 'goals'), orderBy('timestamp', 'desc'));
+        const q = query(collection(db, "goals"), orderBy("timestamp", "desc"));
         const querySnapshot = await getDocs(q);
-        const goalsArray = querySnapshot.docs.map((doc) => doc.data().goal);
-        setGoals(goalsArray);
+
+        const goalsData = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          text: doc.data().goal,
+          date: doc.data().timestamp?.toDate() ?? null
+        }));
+
+        setGoals(goalsData);
       } catch (error) {
-        Alert.alert('Error', 'Failed to fetch goals: ' + error.message);
+        Alert.alert("Error", error.message);
       }
     };
 
     fetchGoals();
   }, []);
 
+  const handleDelete = async (id) => {
+    Alert.alert("Delete Goal?", "Are you sure?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          await deleteDoc(doc(db, "goals", id));
+          setGoals(prev => prev.filter(g => g.id !== id));
+          setModalVisible(false);
+        }
+      }
+    ]);
+  };
+
+  const openModal = (item) => {
+    setSelectedGoal(item);
+    setModalVisible(true);
+  };
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity onPress={() => openModal(item)}>
+      <View style={styles.goalCard}>
+        <Text style={styles.goalText}>{item.text}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      
-      <SwipeListView 
-        contentContainerStyle={styles.listContentContainer}
+    <View style={styles.goalsContainer}>
+      <Text style={styles.goalsHeader}>Your Goals 🎯</Text>
+
+      <SwipeListView
         data={goals}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => <Text style={styles.item}>{item}</Text>}
+        contentContainerStyle={styles.listContentContainer}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
         rightOpenValue={-150}
         disableRightSwipe
       />
+
+      {/* Modal for goal details */}
+      <Modal visible={modalVisible} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalGoalText}>{selectedGoal?.text}</Text>
+            <Text style={styles.modalDate}>
+              {selectedGoal?.date
+                ? selectedGoal.date.toLocaleString()
+                : "No date recorded"}
+            </Text>
+
+            <TouchableOpacity
+              style={[styles.deleteBtn]}
+              onPress={() => handleDelete(selectedGoal?.id)}
+            >
+              <Text style={styles.deleteText}>Delete Goal</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.cancelBtn}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.cancelText}>Close</Text>
+            </TouchableOpacity>
+
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
+
 
 export { AchievementsForm, ViewAchievementsForm, ViewGoalsForm, CreateGoalForm};

@@ -8,7 +8,7 @@ import { db } from './firebase'; // Your firestore config
 import styles from './style';
 
 const AddWorkout = () => {
-  const [workout, setWorkout] = useState('');
+  const [workout, setWorkout] = useState('Bench');
   const [reps, setReps] = useState('');
   const [sets, setSets] = useState('');
   const [weight, setWeight] = useState('');
@@ -17,6 +17,10 @@ const AddWorkout = () => {
   
 
   const handleAddWorkout = async () => {
+    if (!workout) {
+        Alert.alert('Please select a workout type ❌');
+          return;
+    }
     if (!weight.trim()) {
           Alert.alert('please log weight used ❌');
           return;

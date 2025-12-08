@@ -127,12 +127,106 @@ achievementItem: {
     
   },
   listContentContainer: {
-
     padding: 20,
     backgroundColor: '#fff',
     alignItems: 'center',
     
   },
+  // got view goals page
+  goalsContainer: {
+    flex: 1,
+    display: 'flex',
+
+  },
+  goalsContainer: {
+  flex: 1,
+  backgroundColor: "white",
+  paddingTop: 40,
+  paddingHorizontal: 15,
+},
+
+goalsHeader: {
+  fontSize: 28,
+  fontWeight: "bold",
+  textAlign: "center",
+  marginBottom: 20,
+  color: "#60B5F9",
+},
+
+goalCard: {
+  backgroundColor: "#E7F2FE",
+  padding: 18,
+  borderRadius: 14,
+  marginBottom: 12,
+  shadowColor: "#000",
+  shadowOpacity: 0.1,
+  shadowRadius: 3,
+  elevation: 2,
+},
+
+goalText: {
+  fontSize: 18,
+  fontWeight: "600",
+  color: "#333",
+},
+
+modalOverlay: {
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "rgba(0,0,0,0.4)",
+},
+
+modalContent: {
+  width: "80%",
+  backgroundColor: "#fff",
+  padding: 25,
+  borderRadius: 14,
+  alignItems: "center",
+},
+
+modalGoalText: {
+  fontSize: 22,
+  fontWeight: "bold",
+  marginBottom: 10,
+  textAlign: "center",
+},
+
+modalDate: {
+  fontSize: 15,
+  color: "#777",
+  marginBottom: 25,
+},
+
+deleteBtn: {
+  backgroundColor: "#FF5757",
+  paddingVertical: 12,
+  width: "100%",
+  borderRadius: 10,
+  marginBottom: 10,
+  alignItems: "center",
+},
+
+deleteText: {
+  color: "white",
+  fontWeight: "600",
+  fontSize: 18,
+},
+
+cancelBtn: {
+  backgroundColor: "#60B5F9",
+  paddingVertical: 12,
+  width: "100%",
+  borderRadius: 10,
+  alignItems: "center",
+},
+
+cancelText: {
+  color: "white",
+  fontWeight: "600",
+  fontSize: 18,
+},
+
 });
 
 export default styles;
