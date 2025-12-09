@@ -133,6 +133,7 @@ function AchievementsStackScreen({ addGoal }) {
       <AchievementsStack.Screen
         name="View Goals"
         component={ViewGoalsForm}
+        options={{ headerShown: false }} 
       />
       <AchievementsStack.Screen
         name="Save Goal"
