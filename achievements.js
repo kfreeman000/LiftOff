@@ -17,15 +17,15 @@ const AchievementsForm = ({ navigation }) => {
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', paddingTop: 0 }}>
       <Image source={require('./assets/liftoff_logo.png')} style={{ width: 200, height: 200, position: 'absolute', top: 30 }} />
       <Text>{'\n\n'}{'\n\n'}{'\n\n'}{'\n\n'}{'\n\n'}</Text>
-      <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('View Achievements')} activeOpacity={0.2}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('ViewAchievements')} activeOpacity={0.2}>
         <Text style={styles.buttonText}>View Achievements</Text>
       </TouchableOpacity>
       <Text>{'\n\n'}</Text>
-      <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('Create Goal')} activeOpacity={0.2}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('CreateGoal')} activeOpacity={0.2}>
         <Text style={styles.buttonText}>Create Goal</Text>
       </TouchableOpacity>
       <Text>{'\n\n'}</Text>
-      <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('View Goals')} activeOpacity={0.2}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('ViewGoals')} activeOpacity={0.2}>
         <Text style={styles.buttonText}>View Goals</Text>
       </TouchableOpacity>
     </View>

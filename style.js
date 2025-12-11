@@ -60,7 +60,7 @@ submitContainer: {
   },
 
 
-// for goals
+// for goal submission
 item: {
   padding: 10,
   marginBottom: 15,
@@ -132,7 +132,8 @@ achievementItem: {
     alignItems: 'center',
     
   },
-  // got view goals page
+
+  // view goals page
   goalsContainer: {
     flex: 1,
     display: 'flex',
