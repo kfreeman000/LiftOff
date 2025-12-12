@@ -13,6 +13,7 @@ import ProfileForm from './profile.js';
 import Friends from './friends.js';
 import styles from './style.js';
 import AddWorkout from './addWorkout.js';
+import firstScreen from './initial.js';
 
 function HomeMainScreen({ navigation }) {
   return (
