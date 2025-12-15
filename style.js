@@ -1,6 +1,26 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
+
+  //for initial 
+  InbuttonContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 300,
+    height: 60,
+    borderRadius: 32,
+    backgroundColor: "#60B5F9",
+    overflow: "hidden",
+    marginVertical: 20, 
+    
+  },
+  InbuttonText: {
+    fontFamily: 'Comfortaa-Bold',
+    color: 'white',
+    fontSize: 20,
+    textAlign: 'center',
+    
+  },
     
   //for profile
   text: {

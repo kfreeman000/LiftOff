@@ -1,100 +1,197 @@
 import React, { useState } from 'react';
-import { View, Image, TouchableOpacity, Alert, ScrollView, Switch, Modal, Text, TextInput } from 'react-native';
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  Alert,
+  ScrollView,
+  Switch,
+  Text,
+  TextInput
+} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import styles from './style.js';
+import styles from './style';
 
-const createAcc = () => {
-  const defaultPic = Image.resolveAssetSource(require('./assets/blankProfilePic.webp')).uri;
+/**
+ * CREATE ACCOUNT SCREEN
+ */
+export default function CreateAcc() {
+  // ---------- Profile picture ----------
+  const defaultPic = Image.resolveAssetSource(
+    require('./assets/blankProfilePic.webp')
+  ).uri;
+
   const [pic, setPic] = useState({ uri: defaultPic });
 
+  // ---------- User info ----------
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
   const [gender, setGender] = useState('');
   const [dob, setDob] = useState('');
-  const [publicP, setPublicP] = useState(false);  // true = public profile
-  const [units, setUnits] = useState(true);   // true = lbs
 
-}  
+  // ---------- Preferences ----------
+  const [publicProfile, setPublicProfile] = useState(false);
+  const [units, setUnits] = useState(true); // true = lbs, false = kg
 
-const updatePic = async () => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  // ---------- Pick profile picture ----------
+  const updatePic = async () => {
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (!permissionResult.granted) {
-      Alert.alert("Permission required", "You need to allow access to your photos.");
+      Alert.alert(
+        'Permission required',
+        'You need to allow access to your photos.'
+      );
       return;
     }
 
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.Images,  // img only
-        allowsEditing: true,  // can crop pic
-        aspect: [1, 1],  // make it square 
-        quality: 1,
-      });
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
 
-      console.log("Picker result:", result);
-      if (!result.canceled && result.assets?.length > 0) {
-        setPic({ uri: result.assets[0].uri });
-      }
-    } catch (e) {
-        return;
+    if (!result.canceled && result.assets?.length > 0) {
+      setPic({ uri: result.assets[0].uri });
     }
   };
-return (
-  <ScrollView contentContainerStyle={{ padding: 20 }}>
-          <Text style={styles.text}>Edit Profile</Text>
 
-          <Text style={styles.editText}>Name</Text>
-          <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={name} onChangeText={setName} placeholder="Name" />
+  // ---------- Submit profile ----------
+  const saveProfile = () => {
+    if (!name || !email) {
+      Alert.alert('Missing info', 'Name and email are required.');
+      return;
+    }
 
-          <Text style={styles.editText}>Email</Text>
-          <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={email} onChangeText={setEmail} placeholder="Email" />
+    const profileData = {
+      name,
+      email,
+      height,
+      weight,
+      gender,
+      dob,
+      publicProfile,
+      units: units ? 'lbs' : 'kg',
+      pic,
+    };
 
-          <Text style={styles.editText}>Height</Text>
-          <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={height} keyboardType='numeric' onChangeText={setHeight} placeholder="Height" />
+    console.log('Profile saved:', profileData);
+    Alert.alert('Success', 'Profile created!');
+  };
 
-          <Text style={styles.editText}>Weight</Text>
-          <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={weight} keyboardType='numeric' onChangeText={setWeight} placeholder="Weight" />
+  return (
+    <ScrollView contentContainerStyle={{ padding: 20 }}>
+      <Text style={styles.text}>Create Profile</Text>
 
-          <Text style={styles.editText}>Gender</Text>
-          <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={gender} onChangeText={setGender} placeholder="Gender" />
-
-          <Text style={styles.editText}>Birthday</Text>
-          <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={dob} onChangeText={setDob} placeholder="Birthday" />
-
-          <Text style={styles.editText}>Privacy</Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
-          <Switch
-            value={publicP}               // Boolean state
-            onValueChange={setPublicP}    // Toggles true/false
-            trackColor={{ false: '#ccc', true: '#4CAF50' }} // Gray for off, green for on
-            thumbColor={publicP ? '#fff' : '#f4f3f4'}        // Small circle color
+      {/* Profile Picture */}
+      <View style={{ alignItems: 'center', marginBottom: 20 }}>
+        <TouchableOpacity onPress={updatePic}>
+          <Image
+            source={{ uri: pic.uri }}
+            style={{ width: 120, height: 120, borderRadius: 60 }}
           />
-          <Text style={{ marginLeft: 10 }}>
-            {publicP ? 'Public' : 'Private'}
+          <Text style={{ marginTop: 10, color: '#60B5F9' }}>
+            Change Profile Picture
           </Text>
-          </View>
+        </TouchableOpacity>
+      </View>
 
-          <Text style={styles.editText}>Units</Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
-            <Switch
-              value={units}                // true = lbs, false = kg
-              onValueChange={setUnits}    
-              trackColor={{ false: '#ccc', true: '#4CAF50' }}
-              thumbColor={units ? '#fff' : '#f4f3f4'}
-            />
-            <Text style={{ marginLeft: 10 }}>
-              {units ? 'lbs' : 'kg'}
-            </Text>
-          </View>
+      {/* Inputs */}
+      <Text style={styles.editText}>Name</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Name"
+        placeholderTextColor="#BFBFBF"
+        value={name}
+        onChangeText={setName}
+      />
 
-        <View style={{ marginTop: 30, alignItems: 'center' }}>
-            <TouchableOpacity style={[styles.ProfileButtonContainer, { marginBottom: 10 }]} onPress={saveProfile}>
-              <Text style={styles.buttonText}>Complete Profile</Text>
-            </TouchableOpacity>
-        </View>  
-    </ScrollView>      
+      <Text style={styles.editText}>Email</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="#BFBFBF"
+        value={email}
+        onChangeText={setEmail}
+      />
 
-  );        
+      <Text style={styles.editText}>Height</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Height"
+        placeholderTextColor="#BFBFBF"
+        keyboardType="numeric"
+        value={height}
+        onChangeText={setHeight}
+      />
+
+      <Text style={styles.editText}>Weight</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Weight"
+        placeholderTextColor="#BFBFBF"
+        keyboardType="numeric"
+        value={weight}
+        onChangeText={setWeight}
+      />
+
+      <Text style={styles.editText}>Gender</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Gender"
+        placeholderTextColor="#BFBFBF"
+        value={gender}
+        onChangeText={setGender}
+      />
+
+      <Text style={styles.editText}>Birthday</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="MM/DD/YYYY"
+        placeholderTextColor="#BFBFBF"
+        value={dob}
+        onChangeText={setDob}
+      />
+
+      {/* Privacy */}
+      <Text style={styles.editText}>Privacy</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
+        <Switch
+          value={publicProfile}
+          onValueChange={setPublicProfile}
+        />
+        <Text style={{ marginLeft: 10 }}>
+          {publicProfile ? 'Public' : 'Private'}
+        </Text>
+      </View>
+
+      {/* Units */}
+      <Text style={styles.editText}>Units</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 30 }}>
+        <Switch
+          value={units}
+          onValueChange={setUnits}
+        />
+        <Text style={{ marginLeft: 10 }}>
+          {units ? 'lbs' : 'kg'}
+        </Text>
+      </View>
+
+      {/* Submit */}
+      <View style={{ alignItems: 'center' }}>
+        <TouchableOpacity
+          style={styles.ProfileButtonContainer}
+          onPress={saveProfile}
+        >
+          <Text style={styles.buttonText}>Complete</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
+  );
+};
+
+
