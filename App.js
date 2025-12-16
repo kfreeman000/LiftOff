@@ -11,10 +11,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/* FIRST SCREEN */}
         <Stack.Screen name="FirstScreen" component={FirstScreen} />
-
-        {/* AUTH SCREENS */}
         <Stack.Screen name="CreateAcc" component={CreateAcc} />
         <Stack.Screen name="SignIn" component={SignIn} />
       </Stack.Navigator>
