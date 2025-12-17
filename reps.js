@@ -18,13 +18,11 @@ const WorkoutsList = () => {
   const [editWeight, setEditWeight] = useState('');
   const [editComments, setEditComments] = useState('');
 
-  // Fetch workouts from Firestore
   useEffect(() => {
   const fetchWorkouts = async () => {
     try {
       const workoutRef = collection(db, 'workouts');
 
-      // 🔥 Sort by date descending — newest first!
       const q = query(workoutRef, orderBy('date', 'desc'));
       const querySnapshot = await getDocs(q);
 
@@ -49,7 +47,6 @@ const WorkoutsList = () => {
   fetchWorkouts();
 }, []);
 
-  // Delete workout
   const handleDelete = async (rowKey) => {
     Alert.alert('Delete Workout', 'Are you sure you want to delete this workout?', [
       { text: 'Cancel', style: 'cancel' },
@@ -66,7 +63,6 @@ const WorkoutsList = () => {
     ]);
   };
 
-  // Open edit modal
   const handleEdit = (item) => {
     setEditingWorkout(item);
     setEditReps(item.reps?.toString() || '');
@@ -76,7 +72,6 @@ const WorkoutsList = () => {
     setEditModalVisible(true);
   };
 
-  // Save edited workout
   const saveEdit = async () => {
     if (!editingWorkout) return;
 

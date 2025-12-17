@@ -14,8 +14,11 @@ import * as ImagePicker from 'expo-image-picker';
 import styles from './style';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function CreateAcc() {
+  const navigation = useNavigation();
   const defaultPic = Image.resolveAssetSource(
     require('./assets/blankProfilePic.webp')
   ).uri;
@@ -59,26 +62,37 @@ export default function CreateAcc() {
   };
 
   const saveProfile = () => {
-    if (!name || !email || !dob) {
-      Alert.alert('Missing info', 'name, email, and date of birth are required.');
-      return;
-    }
+  if (!name || !email || !dob) {
+    Alert.alert('Missing info', 'name, email, and date of birth are required.');
+    return false;
+  }
 
-    const profileData = {
-      name,
-      email,
-      height,
-      weight,
-      gender,
-      dob,
-      publicProfile,
-      units: units ? 'lbs' : 'kg',
-      pic,
-    };
-
-    console.log('Profile saved:', profileData);
-    Alert.alert('Success', 'Profile created!');
+  const profileData = {
+    name,
+    email,
+    height,
+    weight,
+    gender,
+    dob,
+    publicProfile,
+    units: units ? 'lbs' : 'kg',
+    pic,
   };
+
+  console.log('Profile saved:', profileData);
+  return true;
+  };
+
+  const handleCompleteProfile = async () => {
+  const success = await saveProfile();
+  if (!success) return;
+  Alert.alert("Success! Account created 🎉")
+
+  navigation.reset({
+    index: 0,
+    routes: [{ name: "Home" }],
+  });
+};
 
   return (
     <KeyboardAvoidingView
@@ -88,11 +102,10 @@ export default function CreateAcc() {
       <ScrollView contentContainerStyle={{ padding: 20, alignItems: "center" }}>
         <Text style={styles.text}>Create Profile</Text>
 
-        {/* Profile Picture */}
         <View style={{ alignItems: 'center', marginBottom: 20 }}>
-          <TouchableOpacity onPress={updatePic}>
+          <TouchableOpacity onPress={updatePic}> 
             <Image
-              source={{ uri: pic.uri }}
+              source={{ uri: pic.uri }} // default profile pic
               style={{ width: 120, height: 120, borderRadius: 60 }}
             />
           </TouchableOpacity>
@@ -179,7 +192,7 @@ export default function CreateAcc() {
         <View style={{ alignItems: 'center' }}>
           <TouchableOpacity
             style={styles.ProfileButtonContainer}
-            onPress={saveProfile}
+            onPress={handleCompleteProfile}
           >
             <Text style={styles.buttonText}>Complete</Text>
           </TouchableOpacity>
@@ -187,11 +200,12 @@ export default function CreateAcc() {
       </ScrollView>
 
       <Modal visible={genderModalVisible} transparent animationType="slide">
-        <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.4)' }}>
-          <View style={{ backgroundColor: 'white', padding: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
+        <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: 'rgba(0,0,0,0.4)', alignItems: "center" }}>
+          <View style={{ backgroundColor: 'white', padding: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, }}>
             <Picker
               selectedValue={gender}
               onValueChange={(value) => setGender(value)}
+              itemStyle={{ color: 'black', fontFamily: 'Comfortaa-Bold' }}
             >
               <Picker.Item label="Woman" value="Woman" />
               <Picker.Item label="Man" value="Man" />

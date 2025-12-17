@@ -13,9 +13,10 @@ import ProfileForm from './profile.js';
 import Friends from './friends.js';
 import styles from './style.js';
 import AddWorkout from './addWorkout.js';
-import firstScreen from './initial.js';
 
-function HomeMainScreen({ navigation }) {
+
+function HomeMainScreen ({ navigation }) {
+
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', paddingTop: 0 }}>
           <Image source={require('./assets/liftoff_logo.png')} style={{ width: 200, height: 200, position: 'absolute', top: 40 }} />
@@ -98,7 +99,7 @@ const Tab = createBottomTabNavigator();
 
 export default function Home() {
   return (
-    <NavigationContainer>
+    
       <Tab.Navigator screenOptions={{ headerShown: false }}>
         
         <Tab.Screen name="Home" component={HomeStackScreen}
@@ -125,6 +126,5 @@ export default function Home() {
           }}
         />
       </Tab.Navigator>
-    </NavigationContainer>
   );
 }
