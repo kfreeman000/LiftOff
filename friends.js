@@ -8,10 +8,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
-  Button,
   Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+
 
 const friends = [
   { id: '1', name: 'Kat Freeman' },
@@ -52,12 +52,16 @@ const FriendList = () => {
       <View style={styles.container}>
         <TextInput
           style={styles.input}
-          placeholder="Search for your friend"
+          placeholder="look up a friend"
           placeholderTextColor="grey"
           value={searchQuery}
           onChangeText={setSearchQuery} 
         />
-        <Button title="Search" onPress={lookUp} />
+        
+        <TouchableOpacity style={styles.buttonContainer} onPress={lookUp}>
+          <Text style={styles.buttonText}>Search</Text>
+        </TouchableOpacity>
+
         <FlatList
           data={friends}
           keyExtractor={(item) => item.id}
@@ -100,6 +104,23 @@ const FriendList = () => {
       height: 1,
       backgroundColor: '#e0e0e0',
     },
+    buttonContainer: {
+    justifyContent: "center",
+    width: 200,
+    height: 60,
+    borderRadius: 32,
+    backgroundColor: "#60B5F9",
+    overflow: "hidden",
+    alignSelf: "center",
+    marginBottom: 50,
+  
+  },
+  buttonText: {
+    fontFamily: 'Comfortaa-Bold',
+    color: 'white',
+    fontSize: 20,
+    textAlign: 'center',
+  },
   });
   
   export default FriendList;

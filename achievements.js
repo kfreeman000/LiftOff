@@ -134,7 +134,7 @@ const CreateGoalForm = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 15, marginBottom: 300 }}>
-      <Text>Create a goal of your own</Text>
+      <Text style={styles.goalsHeader}>Create a goal of your own</Text>
       <TextInput
         ref={inputRef}
         style={styles.input}
@@ -144,7 +144,7 @@ const CreateGoalForm = () => {
         onChangeText={setGoal}
       />
       <TouchableOpacity style={styles.buttonContainer} onPress={saveGoal} activeOpacity={0.5}>
-      <Text style={styles.buttonText}>save goal</Text>
+      <Text style={styles.buttonText}>save</Text>
       </TouchableOpacity>
     </View>
     </TouchableWithoutFeedback>
