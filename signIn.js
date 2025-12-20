@@ -1,42 +1,89 @@
-import { Alert, Text, TextInput, TouchableOpacity, View, } from 'react-native';
+import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import styles from './style';
 
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from './firebase';
+
 export default function SignIn() {
   const navigation = useNavigation();
 
-  const [name, setName] = useState('')
-  const [pword, setPword] = useState('')
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSignIn = async () => {
+    if (!email || !password) {
+      Alert.alert('Whoops! ⚠️', 'Please enter your email and password.');
+      return;
+    }
+
+    try {
+      await signInWithEmailAndPassword(
+        auth,
+        email.trim(),
+        password
+      );
+
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+
+    } catch (error) {
+      Alert.alert('Sign in failed', error.message);
+    }
+  };
 
   return (
-  <KeyboardAvoidingView
-  style={{ flex: 1 }}
-  behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-  >
-    <View style={{ alignItems: 'center', marginTop: 200 }}>
-      <Text style={styles.text}>Welcome back!</Text>
-      <TextInput
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <View style={{ alignItems: 'center', marginTop: 200 }}>
+        <Text style={styles.text}>Welcome back!</Text>
+
+        <TextInput
           style={styles.input}
-          placeholder="username"
+          placeholder="Email"
           placeholderTextColor="#BFBFBF"
-          value={name}
-          onChangeText={setName}
+          value={email}
+          onChangeText={setEmail}
+          autoCapitalize="none"
+          keyboardType="email-address"
         />
 
         <TextInput
           style={styles.input}
-          placeholder="password"
+          placeholder="Password"
           placeholderTextColor="#BFBFBF"
-          value={pword}
-          onChangeText={setPword}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
         />
 
-        <TouchableOpacity style={styles.buttonContainer}>   
-          <Text style={styles.buttonText}>Can't sign in?</Text> 
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={handleSignIn}
+        >
+          <Text style={styles.buttonText}>Sign In</Text>
         </TouchableOpacity>
-    </View>
-  </KeyboardAvoidingView>
+
+        <TouchableOpacity
+          style={[styles.buttonContainer, { marginTop: 12, backgroundColor: '#ccc' }]}
+          onPress={() =>
+            Alert.alert(
+              'Reset password',
+              'Password reset can be wired to Firebase next.'
+            )
+          }
+        >
+          <Text style={[styles.buttonText, { color: 'black' }]}>
+            Can’t sign in?
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
   );
 }

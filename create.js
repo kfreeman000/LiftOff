@@ -16,9 +16,13 @@ import { KeyboardAvoidingView, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 
+import { auth, db } from './firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 
 export default function CreateAcc() {
   const navigation = useNavigation();
+
   const defaultPic = Image.resolveAssetSource(
     require('./assets/blankProfilePic.webp')
   ).uri;
@@ -27,13 +31,14 @@ export default function CreateAcc() {
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
   const [gender, setGender] = useState('');
   const [dob, setDob] = useState('');
 
   const [publicProfile, setPublicProfile] = useState(false);
-  const [units, setUnits] = useState(true);   // true = lbs
+  const [units, setUnits] = useState(true);
 
   const [genderModalVisible, setGenderModalVisible] = useState(false);
 
@@ -50,9 +55,9 @@ export default function CreateAcc() {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,  // img only
-      allowsEditing: true,  // can crop pic
-      aspect: [1, 1],  // make it square
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
       quality: 1,
     });
 
@@ -61,51 +66,61 @@ export default function CreateAcc() {
     }
   };
 
-  const saveProfile = () => {
-  if (!name || !email || !dob) {
-    Alert.alert('Whoops! ⚠️', 'Name, email, and date of birth are required for sign up.');
-    return false;
-  }
-
-  const profileData = {
-    name,
-    email,
-    height,
-    weight,
-    gender,
-    dob,
-    publicProfile,
-    units: units ? 'lbs' : 'kg',
-    pic,
-  };
-
-  console.log('Profile saved:', profileData);
-  return true;
-  };
-
   const handleCompleteProfile = async () => {
-  const success = await saveProfile();
-  if (!success) return;
-  Alert.alert("Success! Account created 🎉")
+    if (!name || !email || !password || !dob) {
+      Alert.alert(
+        'Whoops! ⚠️',
+        'Name, email, password, and date of birth are required.'
+      );
+      return;
+    }
 
-  navigation.reset({
-    index: 0,
-    routes: [{ name: "Home" }],
-  });
-};
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      const uid = userCredential.user.uid;
+
+      await setDoc(doc(db, 'users', uid), {
+        name,
+        email,
+        height,
+        weight,
+        gender,
+        dob,
+        publicProfile,
+        units: units ? 'lbs' : 'kg',
+        photoURL: pic.uri,
+        createdAt: new Date(),
+      });
+
+      Alert.alert('Success! 🎉', 'Account created');
+
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+
+    } catch (error) {
+      Alert.alert('Error', error.message);
+    }
+  };
 
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <ScrollView contentContainerStyle={{ padding: 20, alignItems: "center" }}>
+      <ScrollView contentContainerStyle={{ padding: 20, alignItems: 'center' }}>
         <Text style={styles.text}>Create Profile</Text>
 
         <View style={{ alignItems: 'center', marginBottom: 20 }}>
-          <TouchableOpacity onPress={updatePic}> 
+          <TouchableOpacity onPress={updatePic}>
             <Image
-              source={{ uri: pic.uri }} // default profile pic
+              source={{ uri: pic.uri }}
               style={{ width: 120, height: 120, borderRadius: 60 }}
             />
           </TouchableOpacity>
@@ -121,15 +136,25 @@ export default function CreateAcc() {
 
         <TextInput
           style={styles.input}
-          placeholder="Email"  // make thing that's like "enter valid email"
+          placeholder="Email"
           placeholderTextColor="#BFBFBF"
           value={email}
           onChangeText={setEmail}
+          autoCapitalize="none"
         />
 
         <TextInput
           style={styles.input}
-          placeholder="Height"  // make this feet and inches + another unit and make optional
+          placeholder="Password"
+          placeholderTextColor="#BFBFBF"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Height"
           placeholderTextColor="#BFBFBF"
           keyboardType="numeric"
           value={height}
@@ -138,7 +163,7 @@ export default function CreateAcc() {
 
         <TextInput
           style={styles.input}
-          placeholder="Weight" // make optional
+          placeholder="Weight"
           placeholderTextColor="#BFBFBF"
           keyboardType="numeric"
           value={weight}
@@ -150,7 +175,7 @@ export default function CreateAcc() {
           onPress={() => setGenderModalVisible(true)}
           activeOpacity={0.7}
         >
-          <Text style={{ color: gender ? 'black' : '#BFBFBF'}}>
+          <Text style={{ color: gender ? 'black' : '#BFBFBF' }}>
             {gender || 'Gender'}
           </Text>
         </TouchableOpacity>
@@ -166,10 +191,8 @@ export default function CreateAcc() {
         <Text style={styles.editText}>Privacy</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
           <Switch
-            value={publicProfile}               // Boolean state
-            onValueChange={setPublicProfile}    // Toggles true/false
-            trackColor={{ false: '#ccc', true: '#4CAF50' }} // Gray for off, green for on
-            thumbColor={publicProfile ? '#fff' : '#f4f3f4'}        // Small circle color
+            value={publicProfile}
+            onValueChange={setPublicProfile}
           />
           <Text style={{ marginLeft: 10 }}>
             {publicProfile ? 'Public' : 'Private'}
@@ -179,29 +202,39 @@ export default function CreateAcc() {
         <Text style={styles.editText}>Units</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 30 }}>
           <Switch
-            value={units}                // true = lbs, false = kg
+            value={units}
             onValueChange={setUnits}
-            trackColor={{ false: '#ccc', true: '#4CAF50' }}
-            thumbColor={units ? '#fff' : '#f4f3f4'}
           />
           <Text style={{ marginLeft: 10 }}>
             {units ? 'lbs' : 'kg'}
           </Text>
         </View>
 
-        <View style={{ alignItems: 'center' }}>
-          <TouchableOpacity
-            style={styles.ProfileButtonContainer}
-            onPress={handleCompleteProfile}
-          >
-            <Text style={styles.buttonText}>Complete</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={styles.ProfileButtonContainer}
+          onPress={handleCompleteProfile}
+        >
+          <Text style={styles.buttonText}>Complete</Text>
+        </TouchableOpacity>
       </ScrollView>
 
       <Modal visible={genderModalVisible} transparent animationType="slide">
-        <View style={{ flex: 1, justifyContent: "flex-end", backgroundColor: 'rgba(0,0,0,0.4)', alignItems: "center" }}>
-          <View style={{ backgroundColor: 'white', padding: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, }}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'flex-end',
+            backgroundColor: 'rgba(0,0,0,0.4)',
+            alignItems: "center"
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: 'white',
+              padding: 20,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+            }}
+          >
             <Picker
               selectedValue={gender}
               onValueChange={(value) => setGender(value)}
@@ -224,4 +257,4 @@ export default function CreateAcc() {
       </Modal>
     </KeyboardAvoidingView>
   );
-};
+}

@@ -5,8 +5,11 @@ import React, { useState } from 'react';
 import { View, Image, TouchableOpacity, Alert, ScrollView, Switch, Modal, Text, TextInput } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import styles from './style.js';
+import { useNavigation } from '@react-navigation/native';
 
 const ProfileScreen = () => {
+  const navigation = useNavigation();
+
   const defaultPic = Image.resolveAssetSource(require('./assets/blankProfilePic.webp')).uri;
   const [pic, setPic] = useState({ uri: defaultPic });
 
@@ -82,7 +85,9 @@ const ProfileScreen = () => {
         <Text style={styles.buttonText}>Edit Settings</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={[styles.ProfileButtonContainer, { backgroundColor: '#FF5757'}]}>
+      <TouchableOpacity style={[styles.ProfileButtonContainer, { backgroundColor: '#FF5757'}]} onPress={() => navigation.reset({
+        index: 0,
+        routes: [{ name: 'FirstScreen' }], })}>
         <Text style={styles.buttonText}>Logout</Text>
       </TouchableOpacity>
 
