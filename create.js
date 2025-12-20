@@ -63,7 +63,7 @@ export default function CreateAcc() {
 
   const saveProfile = () => {
   if (!name || !email || !dob) {
-    Alert.alert('Missing info', 'name, email, and date of birth are required.');
+    Alert.alert('Whoops! ⚠️', 'Name, email, and date of birth are required for sign up.');
     return false;
   }
 
@@ -150,7 +150,7 @@ export default function CreateAcc() {
           onPress={() => setGenderModalVisible(true)}
           activeOpacity={0.7}
         >
-          <Text style={{ color: gender ? 'black' : '#BFBFBF' }}>
+          <Text style={{ color: gender ? 'black' : '#BFBFBF'}}>
             {gender || 'Gender'}
           </Text>
         </TouchableOpacity>

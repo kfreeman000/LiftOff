@@ -113,6 +113,7 @@ achievementItem: {
     paddingHorizontal: 10,
     width: '80%',
     marginBottom: 20,
+    justifyContent: 'center',
   },
   buttonContainer: {
     alignItems: "center",
