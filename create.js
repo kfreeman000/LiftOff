@@ -35,7 +35,10 @@ export default function CreateAcc() {
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
   const [gender, setGender] = useState('');
-  const [dob, setDob] = useState('');
+  const [birthDay, setBirthDay] = useState('');
+  const [birthMonth, setBirthMonth] = useState('');
+  const [birthYear, setBirthYear] = useState('');
+
 
   const [publicProfile, setPublicProfile] = useState(false);
   const [units, setUnits] = useState(true);
@@ -67,7 +70,7 @@ export default function CreateAcc() {
   };
 
   const handleCompleteProfile = async () => {
-    if (!name || !email || !password || !dob) {
+    if (!name || !email || !birthDay || !birthMonth || !birthYear) {
       Alert.alert(
         'Whoops! ⚠️',
         'Name, email, password, and date of birth are required.'
@@ -90,7 +93,9 @@ export default function CreateAcc() {
         height,
         weight,
         gender,
-        dob,
+        birthDay,
+        birthMonth,
+        birthYear,
         publicProfile,
         units: units ? 'lbs' : 'kg',
         photoURL: pic.uri,
@@ -172,21 +177,48 @@ export default function CreateAcc() {
 
         <TouchableOpacity
           style={styles.input}
-          onPress={() => setGenderModalVisible(true)}
-          activeOpacity={0.7}
+          onPress={() => {
+            if (!gender) setGender('Woman');
+            setGenderModalVisible(true);
+        }}
         >
           <Text style={{ color: gender ? 'black' : '#BFBFBF' }}>
             {gender || 'Gender'}
           </Text>
         </TouchableOpacity>
 
+    <View style={{ flexDirection: 'row', gap: 10 }}>
         <TextInput
-          style={styles.input}
-          placeholder="Birthday"
+          style={[styles.input, { flex: 1, marginLeft: 35}]}
+          placeholder="DD"
           placeholderTextColor="#BFBFBF"
-          value={dob}
-          onChangeText={setDob}
+          keyboardType="numeric"
+          maxLength={2}
+          value={birthDay}
+          onChangeText={setBirthDay}
         />
+
+        <TextInput
+          style={[styles.input, { flex: 1 }]}
+          placeholder="MM"
+          placeholderTextColor="#BFBFBF"
+          keyboardType="numeric"
+          maxLength={2}
+          value={birthMonth}
+          onChangeText={setBirthMonth}
+        />
+
+        <TextInput
+          style={[styles.input, { flex: 1, marginRight: 35 }]}
+          placeholder="YYYY"
+          placeholderTextColor="#BFBFBF"
+          keyboardType="numeric"
+          maxLength={4}
+          value={birthYear}
+          onChangeText={setBirthYear}
+        />
+    </View>
+
 
         <Text style={styles.editText}>Privacy</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
