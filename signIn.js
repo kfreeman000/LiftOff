@@ -3,6 +3,7 @@ import { KeyboardAvoidingView, Platform } from 'react-native';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import styles from './style';
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './firebase';
@@ -41,7 +42,10 @@ export default function SignIn() {
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <View style={{ alignItems: 'center', marginTop: 200 }}>
+    <LinearGradient
+    colors={['#e6eff5', '#def0fa', '#71c4f5']}
+    style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ alignItems: 'center' }}>
         <Text style={styles.text}>Welcome back!</Text>
 
         <TextInput
@@ -84,6 +88,7 @@ export default function SignIn() {
           </Text>
         </TouchableOpacity>
       </View>
+      </LinearGradient>
     </KeyboardAvoidingView>
   );
 }

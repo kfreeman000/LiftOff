@@ -10,6 +10,7 @@ import {
   TextInput,
   Modal
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import styles from './style';
 import { KeyboardAvoidingView, Platform } from 'react-native';
@@ -119,6 +120,9 @@ export default function CreateAcc() {
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <LinearGradient
+      colors={['#e6eff5', '#def0fa', '#71c4f5']}
+      style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <ScrollView contentContainerStyle={{ padding: 20, alignItems: 'center' }}>
         <Text style={styles.text}>Create Profile</Text>
 
@@ -287,6 +291,7 @@ export default function CreateAcc() {
           </View>
         </View>
       </Modal>
+      </LinearGradient>
     </KeyboardAvoidingView>
   );
 }
