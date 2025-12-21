@@ -1,6 +1,6 @@
 # LiftOff
 
-Struggling with fitness motivation? **LiftOff** might just be the boost you need! This React application, built with JavaScript, helps you track your weights from gym sessions and stay encouraged on your fitness journey.
+Struggling with fitness motivation? **LiftOff** might just be the boost you need! This React Native application helps you track your weights from gym sessions and stay encouraged on your fitness journey.
 
 ---
 
