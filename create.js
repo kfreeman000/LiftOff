@@ -138,6 +138,7 @@ export default function CreateAcc() {
         <TextInput
           style={styles.input}
           placeholder="Name"
+          backgroundColor="white"
           placeholderTextColor="#BFBFBF"
           value={name}
           onChangeText={setName}
@@ -146,6 +147,7 @@ export default function CreateAcc() {
         <TextInput
           style={styles.input}
           placeholder="Email"
+          backgroundColor="white"
           placeholderTextColor="#BFBFBF"
           value={email}
           onChangeText={setEmail}
@@ -155,6 +157,7 @@ export default function CreateAcc() {
         <TextInput
           style={styles.input}
           placeholder="Password"
+          backgroundColor="white"
           placeholderTextColor="#BFBFBF"
           secureTextEntry
           value={password}
@@ -164,6 +167,7 @@ export default function CreateAcc() {
         <TextInput
           style={styles.input}
           placeholder="Height"
+          backgroundColor="white"
           placeholderTextColor="#BFBFBF"
           keyboardType="numeric"
           value={height}
@@ -173,6 +177,7 @@ export default function CreateAcc() {
         <TextInput
           style={styles.input}
           placeholder="Weight"
+          backgroundColor="white"
           placeholderTextColor="#BFBFBF"
           keyboardType="numeric"
           value={weight}
@@ -180,7 +185,15 @@ export default function CreateAcc() {
         />
 
         <TouchableOpacity
-          style={styles.input}
+          style={{height: 40,
+                  borderColor: 'gray',
+                  borderWidth: 1,
+                  borderRadius: 5,
+                  paddingHorizontal: 10,
+                  width: '80%',
+                  marginBottom: 20,
+                  justifyContent: 'center',
+                  backgroundColor: 'white'}}
           onPress={() => {
             if (!gender) setGender('Woman');
             setGenderModalVisible(true);
@@ -195,6 +208,7 @@ export default function CreateAcc() {
         <TextInput
           style={[styles.input, { flex: 1, marginLeft: 35}]}
           placeholder="DD"
+          backgroundColor="white"
           placeholderTextColor="#BFBFBF"
           keyboardType="numeric"
           maxLength={2}
@@ -205,6 +219,7 @@ export default function CreateAcc() {
         <TextInput
           style={[styles.input, { flex: 1 }]}
           placeholder="MM"
+          backgroundColor="white"
           placeholderTextColor="#BFBFBF"
           keyboardType="numeric"
           maxLength={2}
@@ -215,6 +230,7 @@ export default function CreateAcc() {
         <TextInput
           style={[styles.input, { flex: 1, marginRight: 35 }]}
           placeholder="YYYY"
+          backgroundColor="white"
           placeholderTextColor="#BFBFBF"
           keyboardType="numeric"
           maxLength={4}

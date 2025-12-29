@@ -21,6 +21,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     
   },
+  Ininput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    width: 300,
+    marginBottom: 20,
+    marginTop: 10,
+    justifyContent: 'center',
+  },
     
   //for profile
   text: {

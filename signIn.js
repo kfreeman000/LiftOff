@@ -49,8 +49,9 @@ export default function SignIn() {
         <Text style={styles.text}>Welcome back!</Text>
 
         <TextInput
-          style={styles.input}
+          style={styles.Ininput}
           placeholder="Email"
+          backgroundColor="white"
           placeholderTextColor="#BFBFBF"
           value={email}
           onChangeText={setEmail}
@@ -59,8 +60,9 @@ export default function SignIn() {
         />
 
         <TextInput
-          style={styles.input}
+          style={styles.Ininput}
           placeholder="Password"
+          backgroundColor="white"
           placeholderTextColor="#BFBFBF"
           value={password}
           onChangeText={setPassword}
