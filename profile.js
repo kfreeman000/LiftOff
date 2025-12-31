@@ -26,12 +26,12 @@ const ProfileScreen = () => {
 
   const saveProfile = () => {
     setProfileModalVisible(false);
-    Alert.alert("success", "profile updated!");
+    Alert.alert("Success", "profile updated!✔️");
   };
 
   const saveSettings = () => {
     setSettingsModalVisible(false);
-    Alert.alert("success", "settings updated!");
+    Alert.alert("Success", "settings updated!✔️");
   };
 
   const updatePic = async () => {
@@ -92,27 +92,25 @@ const ProfileScreen = () => {
       </TouchableOpacity>
 
       <Modal style={styles.modal} visible={isProfileModalVisible} animationType="fade" transparent={false}>
-        <ScrollView contentContainerStyle={{ padding: 20 }}>
+        <ScrollView contentContainerStyle={{ padding: 20, alignItems: 'center' }}>
           <Text style={styles.text}>Edit Profile</Text>
 
-          <Text style={styles.editText}>Name</Text>
+          <View style={{ alignItems: 'center', marginBottom: 20 }}>
+                    <TouchableOpacity onPress={updatePic}>
+                      <Image
+                        source={{ uri: pic.uri }}
+                        style={{ width: 120, height: 120, borderRadius: 60 }}
+                      />
+                    </TouchableOpacity>
+          </View>
+
           <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={name} onChangeText={setName} placeholder="Name" />
 
-          <Text style={styles.editText}>Email</Text>
           <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={email} onChangeText={setEmail} placeholder="Email" />
 
-          <Text style={styles.editText}>Height</Text>
           <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={height} keyboardType='numeric' onChangeText={setHeight} placeholder="Height" />
 
-          <Text style={styles.editText}>Weight</Text>
           <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={weight} keyboardType='numeric' onChangeText={setWeight} placeholder="Weight" />
-
-          <Text style={styles.editText}>Gender</Text>
-          <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={gender} onChangeText={setGender} placeholder="Gender" />
-
-          <Text style={styles.editText}>Birthday</Text>
-          <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={dob} onChangeText={setDob} placeholder="Birthday" />
-
           
           <View style={{ marginTop: 30, alignItems: 'center' }}>
             <TouchableOpacity style={[styles.ProfileButtonContainer, { marginBottom: 10 }]} onPress={saveProfile}>

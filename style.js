@@ -32,7 +32,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
     justifyContent: 'center',
   },
-    
+
+  // for PR
+  PRcontainer: {
+    flex: 1,
+    padding: 40,
+    backgroundColor: '#fff',
+  },
+
   //for profile
   text: {
     color: "#56c5f5",
@@ -87,7 +94,8 @@ submitContainer: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
-    textAlign: 'left',
+    textAlign: 'center',
+    marginTop: 50,
   },
 
 
@@ -153,7 +161,7 @@ achievementItem: {
   },
   container: {
     flex: 1,
-    padding: 20,
+    padding: 40,
     backgroundColor: '#fff',
     alignItems: 'center',
     

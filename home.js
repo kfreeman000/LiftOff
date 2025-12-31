@@ -13,6 +13,7 @@ import ProfileForm from './profile.js';
 import Friends from './friends.js';
 import styles from './style.js';
 import AddWorkout from './addWorkout.js';
+import PR from './oneRepMax.js'
 
 
 function HomeMainScreen ({ navigation }) {
@@ -125,6 +126,16 @@ export default function Home() {
             )
           }}
         />
+
+        <Tab.Screen name="PR" component={PR}
+          options={{
+            tabBarIcon: ({ focused, size }) => (
+              <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color="#60B5F9" />
+            )
+          }}
+        />
+
+        
       </Tab.Navigator>
   );
 }
