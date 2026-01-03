@@ -139,7 +139,7 @@ const WorkoutsList = () => {
       <Picker
         selectedValue={selectedExercise}
         onValueChange={(itemValue) => setSelectedExercise(itemValue)}
-        style={{ width: '100%', marginVertical: 10 }}
+        style={{ width: '80%', marginVertical: 10 }}
         itemStyle={{ color: 'black', fontFamily: 'Comfortaa-Bold' }}
       >
         <Picker.Item label="Bench" value="Bench" />

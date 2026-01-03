@@ -36,8 +36,17 @@ const styles = StyleSheet.create({
   // for PR
   PRcontainer: {
     flex: 1,
-    padding: 40,
+    padding: 20,
     backgroundColor: '#fff',
+  },
+
+  estimationText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "left",
+    marginBottom: 20,
+    color: "#60B5F9",
+    paddingTop: 80,
   },
 
   //for profile
@@ -137,6 +146,7 @@ achievementItem: {
   buttonContainer: {
     alignItems: "center",
     justifyContent: "center",
+    alignSelf: "center",
     width: 300,
     height: 60,
     borderRadius: 32,
@@ -187,7 +197,7 @@ achievementItem: {
 },
 
 goalsHeader: {
-  fontSize: 28,
+  fontSize: 20,
   fontWeight: "bold",
   textAlign: "center",
   marginBottom: 20,
