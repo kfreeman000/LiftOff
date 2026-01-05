@@ -19,7 +19,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { auth, db } from './firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 export default function CreateAcc() {
   const navigation = useNavigation();
@@ -71,7 +71,7 @@ export default function CreateAcc() {
   };
 
   const handleCompleteProfile = async () => {
-    if (!name || !email || !birthDay || !birthMonth || !birthYear) {
+    if (!name || !email || !password || !birthDay || !birthMonth || !birthYear) {
       Alert.alert(
         'Whoops! ⚠️',
         'Name, email, password, and date of birth are required.'
@@ -100,7 +100,7 @@ export default function CreateAcc() {
         publicProfile,
         units: units ? 'lbs' : 'kg',
         photoURL: pic.uri,
-        createdAt: new Date(),
+        createdAt: serverTimestamp(),
       });
 
       Alert.alert('Success! 🎉', 'Account created');

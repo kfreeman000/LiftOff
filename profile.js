@@ -26,19 +26,19 @@ const ProfileScreen = () => {
 
   const saveProfile = () => {
     setProfileModalVisible(false);
-    Alert.alert("Success", "profile updated!✔️");
+    Alert.alert("Success ✔️", "profile updated!");
   };
 
   const saveSettings = () => {
     setSettingsModalVisible(false);
-    Alert.alert("Success", "settings updated!✔️");
+    Alert.alert("Success ✔️", "settings updated!");
   };
 
   const updatePic = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    if (!permissionResult.granted) {
-      Alert.alert("Permission required", "You need to allow access to your photos.");
+    if (!permissionResult.granted) { // this var must = true to proceed 
+      Alert.alert("Permission required ⚠️", "LiftOff needs access to your photos.");
       return;
     }
 
@@ -47,11 +47,10 @@ const ProfileScreen = () => {
         mediaTypes: ImagePicker.Images,  // img only
         allowsEditing: true,  // can crop pic
         aspect: [1, 1],  // make it square 
-        quality: 1,
+        quality: 1,      // figure out wtf this does 
       });
 
-      console.log("Picker result:", result);
-      if (!result.canceled && result.assets?.length > 0) {
+      if (!result.canceled && result.assets?.length > 0) { // if pic choosing is cancelled ? go back to default pic
         setPic({ uri: result.assets[0].uri });
       }
     } catch (e) {
