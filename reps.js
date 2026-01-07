@@ -1,4 +1,3 @@
-// WorkoutsList.js
 
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, Modal } from 'react-native';

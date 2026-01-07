@@ -98,7 +98,7 @@ const PRscreen = () => {
         </View>
       ) : (
         <Text style={{ marginTop: 20, fontSize: 16 }}>
-          No valid {selectedExercise} sets found yet. Log a workout first!
+          No {selectedExercise} sets found yet. Log a workout first!
         </Text>
       )}
     </View>
