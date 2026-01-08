@@ -138,7 +138,7 @@ const WorkoutsList = () => {
       <Picker
         selectedValue={selectedExercise}
         onValueChange={(itemValue) => setSelectedExercise(itemValue)}
-        style={{ width: '80%', marginVertical: 10 }}
+        style={{ width: '80%', marginVertical: 10, alignSelf: "center" }}
         itemStyle={{ color: 'black', fontFamily: 'Comfortaa-Bold' }}
       >
         <Picker.Item label="Bench" value="Bench" />
@@ -247,7 +247,8 @@ const styles = StyleSheet.create({
   },
 
   container: { flex: 1, padding: 20, backgroundColor: '#fff' },
-  header: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 },
+  header: { fontSize: 24, fontWeight: 'bold', marginBottom: 10, textAlign: 'center',
+    marginTop: 50, },
   item: { padding: 10, marginBottom: 15, backgroundColor: '#f0f0f0', borderRadius: 5 },
   itemText: { fontSize: 16 },
 
