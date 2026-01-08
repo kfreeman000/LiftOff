@@ -133,7 +133,7 @@ const WorkoutsList = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Workout list🏋🏽‍♀️</Text>
+      <Text style={styles.header}>Workout list 🏋🏽</Text>
 
       <Picker
         selectedValue={selectedExercise}

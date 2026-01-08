@@ -52,8 +52,8 @@ const AddWorkout = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-    <View style={{ flex: 1, padding: 15, backgroundColor: 'white'}}>
-      <Text style={styles.header}>Add your workout🏅</Text>
+    <View style={{ flex: 1, padding: 8, backgroundColor: 'white'}}>
+      <Text style={styles.header}>Add your workout 🏅</Text>
     <View style={styles.submitContainer}>
       
       <Picker

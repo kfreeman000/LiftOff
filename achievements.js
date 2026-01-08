@@ -133,8 +133,8 @@ const CreateGoalForm = () => {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 15, marginBottom: 300 }}>
-      <Text style={styles.goalsHeader}>Create a goal of your own</Text>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 15, backgroundColor: 'white' }}>
+      <Text style={styles.header}>Create a goal of your own 💭</Text>
       <TextInput
         ref={inputRef}
         style={styles.input}
@@ -208,7 +208,7 @@ const ViewGoalsForm = () => {
 
   return (
     <View style={styles.goalsContainer}>
-      <Text style={styles.goalsHeader}>Your Goals 🎯</Text>
+      <Text style={styles.header}>Your Goals 🎯</Text>
 
       <SwipeListView
         data={goals}

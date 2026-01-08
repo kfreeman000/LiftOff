@@ -153,7 +153,7 @@ const ProfileScreen = () => {
       });
 
       setSettingsModalVisible(false);
-      Alert.alert("Success", "settings updated!✔️");
+      Alert.alert("Success ✔️", "settings updated!");
     } catch (e) {
       Alert.alert("Error", "Could not update settings.");
     }
@@ -168,6 +168,21 @@ const ProfileScreen = () => {
       navigation.reset({
         index: 0,
         routes: [{ name: 'FirstScreen' }],
+      });
+    }
+  };
+
+  const handleDelete = async () => {
+    Alert.alert('Delete account ⚠️', 'Are you sure you want to delete your account? This action cannot be undone.', [
+      { text: 'Cancel', style: 'cancel' }]); // if cancel, return 
+    try {
+      await signOut(auth);
+    } catch (e) {
+      console.error('deletion error:', e);
+    } finally {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'FirstScreen'}],
       });
     }
   };
@@ -207,6 +222,10 @@ const ProfileScreen = () => {
 
       <TouchableOpacity style={[styles.ProfileButtonContainer, { backgroundColor: '#FF5757'}]} onPress={handleLogout}>
         <Text style={styles.buttonText}>Logout</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={[styles.ProfileButtonContainer, { backgroundColor: '#FF5757'}]} onPress={handleDelete}>
+        <Text style={styles.buttonText}>Delete Account</Text>
       </TouchableOpacity>
 
       <Modal style={styles.modal} visible={isProfileModalVisible} animationType="fade" transparent={false}>

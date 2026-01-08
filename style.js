@@ -196,13 +196,6 @@ achievementItem: {
   paddingHorizontal: 15,
 },
 
-goalsHeader: {
-  fontSize: 20,
-  fontWeight: "bold",
-  textAlign: "center",
-  marginBottom: 20,
-  color: "#60B5F9",
-},
 
 goalCard: {
   backgroundColor: "#E7F2FE",
