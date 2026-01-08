@@ -130,7 +130,7 @@ export default function Home() {
         <Tab.Screen name="PR" component={PR}
           options={{
             tabBarIcon: ({ focused, size }) => (
-              <Ionicons name={focused ? 'home' : 'home-outline'} size={size} color="#60B5F9" />
+              <Ionicons name={focused ? 'barbell' : 'barbell-outline'} size={size} color="#60B5F9" />
             )
           }}
         />

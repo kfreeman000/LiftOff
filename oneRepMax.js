@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from './firebase';
+import { auth, db } from "./firebase";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import styles from './style.js';
 
 const PRscreen = () => {
@@ -13,8 +13,14 @@ const PRscreen = () => {
   useEffect(() => {
     const fetchWorkouts = async () => {
       try {
-        const workoutRef = collection(db, 'workouts');
-        const querySnapshot = await getDocs(workoutRef);
+        const uid = auth.currentUser?.uid;
+        if (!uid) return;
+          const q = query(
+          collection(db, "users", uid, "workouts"),
+          orderBy("date", "desc")
+    );
+
+const querySnapshot = await getDocs(q);
 
         const workoutsData = querySnapshot.docs.map((docSnap) => {
           const data = docSnap.data();
