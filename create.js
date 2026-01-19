@@ -18,7 +18,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 
 import { auth, db } from './firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification  } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 
 export default function CreateAcc() {
@@ -80,13 +80,10 @@ export default function CreateAcc() {
     }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await sendEmailVerification(userCredential.user);
       const uid = userCredential.user.uid;
+
 
       await setDoc(doc(db, 'users', uid), {
         name,
@@ -107,11 +104,11 @@ export default function CreateAcc() {
 
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Home' }],
+        routes: [{ name: 'SignIn' }],
       });
 
     } catch (error) {
-      Alert.alert('Error', error.message);
+      Alert.alert('Whoops! ⚠️', error);
     }
   };
 

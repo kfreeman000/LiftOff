@@ -15,8 +15,17 @@ export default function SignIn() {
   const [password, setPassword] = useState('');
 
   const handleSignIn = async () => {
+
+    const isValidEmailFormat = (email) => {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim().toLowerCase());
+    };
+
     if (!email || !password) {
       Alert.alert('Whoops! ⚠️', 'Please enter your email and password.');
+
+    if (!isValidEmailFormat(email)) {
+      Alert.alert('Whoops! ⚠️', 'Please enter a valid email.');
+    }
       return;
     }
 
