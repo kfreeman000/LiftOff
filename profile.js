@@ -173,8 +173,9 @@ const ProfileScreen = () => {
   };
 
   const handleDelete = async () => {
+    
     Alert.alert('Delete account ⚠️', 'Are you sure you want to delete your account? This action cannot be undone.', [
-      { text: 'Cancel', style: 'cancel' }]); // if cancel, return 
+      { text: 'Cancel', style: 'cancel' }, { text: 'Delete', style: 'delete'}]); // if cancel, return 
     try {
       await signOut(auth);
     } catch (e) {
