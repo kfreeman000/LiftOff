@@ -19,7 +19,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { auth, db } from './firebase';
 import { createUserWithEmailAndPassword, sendEmailVerification  } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 export default function CreateAcc() {
   const navigation = useNavigation();
