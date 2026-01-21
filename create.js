@@ -79,6 +79,16 @@ export default function CreateAcc() {
       return;
     }
 
+    if (!password) {
+      Alert.alert('Whoops! ⚠️', 'Please enter a password.');
+      return;
+    }
+
+    if (password.length < 6) {
+      Alert.alert('Whoops! ⚠️', 'Password must be at least 6 characters.');
+      return;
+    }
+
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await sendEmailVerification(userCredential.user);
