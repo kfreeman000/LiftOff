@@ -20,6 +20,7 @@ import { useNavigation } from '@react-navigation/native';
 import { auth, db } from './firebase';
 import { createUserWithEmailAndPassword, sendEmailVerification  } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CreateAcc() {
   const navigation = useNavigation();
@@ -110,15 +111,27 @@ export default function CreateAcc() {
         createdAt: serverTimestamp(),
       });
 
+      // Save credentials locally for auto-fill on sign-in screen
+      try {
+        await AsyncStorage.setItem('savedEmail', email.trim());
+        await AsyncStorage.setItem('savedPassword', password);
+        console.log('Credentials saved successfully');
+      } catch (storageError) {
+        console.log('Could not save credentials:', storageError);
+        // Continue even if saving fails
+      }
+
       Alert.alert('Success! 🎉', 'Account created');
 
-      navigation.reset({
+      navigation.reset({ // before this, add email verifiication to be able to recover account 
         index: 0,
         routes: [{ name: 'SignIn' }],
       });
 
     } catch (error) {
-      Alert.alert('Whoops! ⚠️', error);
+      console.error('Account creation error:', error);
+      const errorMessage = error?.message || error?.toString() || 'An unknown error occurred';
+      Alert.alert('Whoops! ⚠️', errorMessage);
     }
   };
 
@@ -211,8 +224,8 @@ export default function CreateAcc() {
           </Text>
         </TouchableOpacity>
 
-    <View style={{ flexDirection: 'row', gap: 10 }}>
-        <TextInput
+    <View style={{ flexDirection: 'row', gap: 10 }}> 
+        <TextInput // make it so when you finish day it jumps to month then year 
           style={[styles.input, { flex: 1, marginLeft: 35}]}
           placeholder="DD"
           backgroundColor="white"

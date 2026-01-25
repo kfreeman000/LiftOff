@@ -1,9 +1,10 @@
+import React, { useState, useEffect } from 'react';
 import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAvoidingView, Platform } from 'react-native';
-import { useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native'; // useFocusEffect is used to reload the screen when the user comes back to the sign in screen
 import styles from './style';
 import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   signInWithEmailAndPassword,
@@ -19,6 +20,36 @@ export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false); //loading state needed to prevent double taps 
+
+  // Load saved credentials when component mounts or screen comes into focus
+  const loadSavedCredentials = async () => {
+    try {
+      const savedEmail = await AsyncStorage.getItem('savedEmail');
+      const savedPassword = await AsyncStorage.getItem('savedPassword');
+      
+      console.log('Loading saved credentials - Email:', savedEmail ? 'Found' : 'Not found', 'Password:', savedPassword ? 'Found' : 'Not found');
+      
+      if (savedEmail) {
+        setEmail(savedEmail);
+      }
+      if (savedPassword) {
+        setPassword(savedPassword);
+      }
+    } catch (error) {
+      console.log('Could not load saved credentials:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadSavedCredentials();
+  }, []);
+
+  // Also reload when screen comes into focus (e.g., after account creation)
+  useFocusEffect(
+    React.useCallback(() => {
+      loadSavedCredentials();
+    }, [])
+  );
 
   const handleSignIn = async () => {
     const isValidEmailFormat = (email) => {
@@ -80,7 +111,9 @@ export default function SignIn() {
       });
 
     } catch (error) {
-      Alert.alert('Sign in failed', error.message);
+      console.error('Sign in error:', error);
+      const errorMessage = error?.message || 'Sign in failed. Please check your email and password.';
+      Alert.alert('Sign in failed', errorMessage);
     } finally {
       setLoading(false);
     }
