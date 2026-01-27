@@ -11,6 +11,7 @@ import { AchievementsForm, ViewAchievementsForm, CreateGoalForm, ViewGoalsForm }
 import RepForm from './reps.js';
 import ProfileForm from './profile.js';
 import Friends from './friends.js';
+import FriendProfile from './friendProfile.js';
 import styles from './style.js';
 import AddWorkout from './addWorkout.js';
 import PR from './oneRepMax.js'
@@ -95,6 +96,30 @@ function AchievementsStackScreen() {
   );
 }
 
+/******** FRIENDS STACK ********/
+const FriendsStack = createNativeStackNavigator();
+function FriendsStackScreen() {
+  return (
+    <FriendsStack.Navigator
+      screenOptions={{
+        headerTintColor: '#60B5F9',
+        headerTitleAlign: 'center'
+      }}
+    >
+      <FriendsStack.Screen
+        name="FriendsList"
+        component={Friends}
+        options={{ title: "Friends", headerShown: false }}
+      />
+      <FriendsStack.Screen
+        name="FriendProfile"
+        component={FriendProfile}
+        options={{ title: "Friend Profile" }}
+      />
+    </FriendsStack.Navigator>
+  );
+}
+
 /******** BOTTOM TABS ********/
 const Tab = createBottomTabNavigator();
 
@@ -119,7 +144,7 @@ export default function Home() {
           }}
         />
 
-        <Tab.Screen name="Friends" component={Friends}
+        <Tab.Screen name="Friends" component={FriendsStackScreen}
           options={{
             tabBarIcon: ({ focused, size }) => (
               <Ionicons name={focused ? 'people-circle' : 'people-circle-outline'} size={size} color="#60B5F9" />
