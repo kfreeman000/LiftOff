@@ -4,7 +4,7 @@ import { addDoc, collection } from 'firebase/firestore';
 import React, { useState, useRef } from 'react';
 import { Alert, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, View} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { db } from './firebase'; // Your firestore config
+import { db, auth } from './firebase'; // Your firestore config
 import styles from './style';
 
 const AddWorkout = () => {
@@ -29,7 +29,13 @@ const AddWorkout = () => {
   const setsValue = sets.trim() ? parseInt(sets, 10) : 'unknown';
 
     try {
-      await addDoc(collection(db, 'workouts'), {
+      const uid = auth.currentUser?.uid;
+      if (!uid) {
+        Alert.alert('Error', 'You must be signed in to add a workout.');
+        return;
+      }
+
+      await addDoc(collection(db, 'users', uid, 'workouts'), {
       workout,
       reps: repsValue,
       sets: setsValue,
@@ -67,24 +73,7 @@ const AddWorkout = () => {
                 <Picker.Item  label="Deadlift" value="Deadlift" />
                 <Picker.Item  label="Row" value="Row" />
       </Picker>
-      <TextInput
-        ref={inputRef}
-        style={styles.input}
-        placeholder="Reps"
-        placeholderTextColor="#BFBFBF"
-        value={reps}
-        onChangeText={setReps}
-        keyboardType="numeric"
-      />
-      <TextInput
-        ref={inputRef}
-        style={styles.input}
-        placeholder="Sets"
-        placeholderTextColor="#BFBFBF"
-        value={sets}
-        onChangeText={setSets}
-        keyboardType="numeric"
-      />
+
       <TextInput
         ref={inputRef}
         style={styles.input}
@@ -94,6 +83,27 @@ const AddWorkout = () => {
         onChangeText={setWeight}
         keyboardType="numeric"
       />
+
+      <TextInput
+        ref={inputRef}
+        style={styles.input}
+        placeholder="Sets"
+        placeholderTextColor="#BFBFBF"
+        value={sets}
+        onChangeText={setSets}
+        keyboardType="numeric"
+      />
+
+      <TextInput
+        ref={inputRef}
+        style={styles.input}
+        placeholder="Reps"
+        placeholderTextColor="#BFBFBF"
+        value={reps}
+        onChangeText={setReps}
+        keyboardType="numeric"
+      />
+      
       <TextInput
         ref={inputRef}
         style={styles.input}

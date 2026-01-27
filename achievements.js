@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Image, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, FlatList, Animated, Alert, Keyboard, Modal } from 'react-native';
-import { db } from './firebase';
-import { collection, query, getDocs, orderBy, addDoc, serverTimestamp } from 'firebase/firestore'; 
+import { db, auth } from './firebase';
+import { collection, query, getDocs, orderBy, addDoc, serverTimestamp, deleteDoc, doc } from 'firebase/firestore'; 
 import styles from './style.js'; 
 import { SwipeListView } from 'react-native-swipe-list-view';
 
@@ -101,7 +101,11 @@ const ViewAchievementsForm = () => {
 // create goal button
 const addGoal = async (goal) => {
   try {
-    await addDoc(collection(db, 'goals'), {
+    const uid = auth.currentUser?.uid;
+    if (!uid) {
+      throw new Error('You must be signed in to create a goal.');
+    }
+    await addDoc(collection(db, 'users', uid, 'goals'), {
       goal,
       timestamp: serverTimestamp(),
     });
@@ -160,7 +164,12 @@ const ViewGoalsForm = () => {
   useEffect(() => {
     const fetchGoals = async () => {
       try {
-        const q = query(collection(db, "goals"), orderBy("timestamp", "desc"));
+        const uid = auth.currentUser?.uid;
+        if (!uid) {
+          console.log('No user signed in');
+          return;
+        }
+        const q = query(collection(db, "users", uid, "goals"), orderBy("timestamp", "desc"));
         const querySnapshot = await getDocs(q);
 
         const goalsData = querySnapshot.docs.map(doc => ({
@@ -185,7 +194,12 @@ const ViewGoalsForm = () => {
         text: "Delete",
         style: "destructive",
         onPress: async () => {
-          await deleteDoc(doc(db, "goals", id));
+          const uid = auth.currentUser?.uid;
+          if (!uid) {
+            Alert.alert('Error', 'You must be signed in to delete a goal.');
+            return;
+          }
+          await deleteDoc(doc(db, "users", uid, "goals", id));
           setGoals(prev => prev.filter(g => g.id !== id));
           setModalVisible(false);
         }

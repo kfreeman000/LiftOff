@@ -1,14 +1,15 @@
 
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, Modal, ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { collection, getDocs, deleteDoc, doc, updateDoc, query, orderBy } from 'firebase/firestore';
-import { db } from './firebase';
+import { db, auth } from './firebase';
 import { SwipeListView } from 'react-native-swipe-list-view';
 
 const WorkoutsList = () => {
   const [workouts, setWorkouts] = useState([]);
   const [selectedExercise, setSelectedExercise] = useState('Bench');
+  const [loading, setLoading] = useState(true);
 
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editingWorkout, setEditingWorkout] = useState(null);
@@ -20,7 +21,15 @@ const WorkoutsList = () => {
   useEffect(() => {
   const fetchWorkouts = async () => {
     try {
-      const workoutRef = collection(db, 'workouts');
+      setLoading(true);
+      const uid = auth.currentUser?.uid;
+      if (!uid) {
+        console.log('No user signed in');
+        setLoading(false);
+        return;
+      }
+
+      const workoutRef = collection(db, 'users', uid, 'workouts');
 
       const q = query(workoutRef, orderBy('date', 'desc'));
       const querySnapshot = await getDocs(q);
@@ -40,6 +49,8 @@ const WorkoutsList = () => {
       setWorkouts(workoutsData);
     } catch (error) {
       console.error("Error fetching workouts: ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -51,9 +62,14 @@ const WorkoutsList = () => {
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete', style: 'destructive', onPress: async () => {
+          const uid = auth.currentUser?.uid;
+          if (!uid) {
+            Alert.alert('Error', 'You must be signed in to delete a workout.');
+            return;
+          }
           setWorkouts(prev => prev.filter(item => item.id !== rowKey));
           try {
-            await deleteDoc(doc(db, 'workouts', rowKey));
+            await deleteDoc(doc(db, 'users', uid, 'workouts', rowKey));
           } catch (error) {
             console.error("Error deleting workout:", error);
           }
@@ -75,7 +91,13 @@ const WorkoutsList = () => {
     if (!editingWorkout) return;
 
     try {
-      const workoutRef = doc(db, 'workouts', editingWorkout.id);
+      const uid = auth.currentUser?.uid;
+      if (!uid) {
+        Alert.alert('Error', 'You must be signed in to edit a workout.');
+        return;
+      }
+
+      const workoutRef = doc(db, 'users', uid, 'workouts', editingWorkout.id);
       await updateDoc(workoutRef, {
         reps: editReps ? parseInt(editReps) : 'unknown',
         sets: editSets ? parseInt(editSets) : 'unknown',
@@ -147,14 +169,24 @@ const WorkoutsList = () => {
         <Picker.Item label="Row" value="Row" />
       </Picker>
 
-      <SwipeListView
-        data={filteredWorkouts}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        renderHiddenItem={renderHiddenItem}
-        rightOpenValue={-150}
-        disableRightSwipe
-      />
+      {loading ? (
+        <ActivityIndicator size="large" style={{ marginTop: 20 }} />
+      ) : filteredWorkouts.length > 0 ? (
+        <SwipeListView
+          data={filteredWorkouts}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          renderHiddenItem={renderHiddenItem}
+          rightOpenValue={-150}
+          disableRightSwipe
+        />
+      ) : (
+        <Text style={{ marginTop: 20, fontSize: 16 }}>
+          No {selectedExercise} sets found yet. Log a workout first!
+        </Text>
+      )}
+
+        
 
       {/* Edit Workout Modal */}
       <Modal visible={editModalVisible} animationType="slide" transparent={true}>
