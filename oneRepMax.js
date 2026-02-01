@@ -4,6 +4,7 @@ import { Picker } from '@react-native-picker/picker';
 import { auth, db } from "./firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import styles from './style.js';
+import { calculate1RM } from './utils';
 
 const PRscreen = () => {
   const [selectedExercise, setSelectedExercise] = useState('Bench');
@@ -53,8 +54,7 @@ const querySnapshot = await getDocs(q);
         if (!Number.isFinite(weight) || weight <= 0) return null;
         if (!Number.isFinite(reps) || reps <= 0) return null;
 
-        const r = Math.min(reps, 20);
-        const oneRM = weight * (1 + r / 30); // Epley
+        const oneRM = calculate1RM(weight, reps);
 
         return {
           oneRM,
