@@ -79,15 +79,18 @@ export default function CreateAcc() {
       );
       return;
     }
-
-    if (!password) {
-      Alert.alert('Whoops! ⚠️', 'Please enter a password.');
-      return;
-    }
-
     if (password.length < 6) {
       Alert.alert('Whoops! ⚠️', 'Password must be at least 6 characters.');
       return;
+    }
+    
+    function emailTest(email){  
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // standard function to see if email is valid
+      return emailPattern.test(email);
+    }  
+    const isValid = emailTest(email);
+    if (isValid == false){
+      Alert.alert('Whoops! ⚠️', 'This email is not valid')
     }
 
     try {
