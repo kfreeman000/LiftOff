@@ -13,7 +13,7 @@ const firebaseConfig = {
   appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
 };
 
-console.log("API KEY:", process.env.EXPO_PUBLIC_FIREBASE_API_KEY);
+// console.log("API KEY:", process.env.EXPO_PUBLIC_FIREBASE_API_KEY);
 
 const app = initializeApp(firebaseConfig);
 

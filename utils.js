@@ -16,4 +16,4 @@ export const calculate1RM = (weight, reps) => {
  * @param {string} email - Email used to create account
  * @returns {boolean} - If false, the email has invalid chars. If true, the email is valid
  */
-export const emailTest = (email)
+// export const emailTest = (email) 
