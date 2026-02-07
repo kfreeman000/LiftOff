@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { useFocusEffect } from '@react-navigation/native';
 import { auth, db } from "./firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import styles from './style.js';
@@ -11,8 +12,9 @@ const PRscreen = () => {
   const [workouts, setWorkouts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchWorkouts = async () => {
+  useFocusEffect(
+    useCallback(() => {
+      const fetchWorkouts = async () => {
       try {
         const uid = auth.currentUser?.uid;
         if (!uid) return;
@@ -41,7 +43,8 @@ const querySnapshot = await getDocs(q);
     };
 
     fetchWorkouts();
-  }, []);
+    }, [])
+  );
 
   const best = useMemo(() => {
     const relevant = workouts.filter((w) => w.workout === selectedExercise);

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
   Image,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { auth, db } from './firebase';
 import { collection, query, where, getDocs, addDoc, doc, getDoc, orderBy, limit } from 'firebase/firestore';
 
@@ -24,10 +24,12 @@ const FriendList = () => {
 
   const defaultPic = Image.resolveAssetSource(require('./assets/blankProfilePic.webp')).uri;
 
-  // Load friends list for current user
-  useEffect(() => {
-    loadFriends();
-  }, []);
+  // Refetch friends whenever this screen comes into focus (e.g. after adding a friend)
+  useFocusEffect(
+    useCallback(() => {
+      loadFriends();
+    }, [])
+  );
 
   const loadFriends = async () => {
     try {
