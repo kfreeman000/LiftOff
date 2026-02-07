@@ -7,8 +7,9 @@ import styles from './style.js';
 import { useNavigation } from '@react-navigation/native';
 
 import { auth, db } from './firebase';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { onAuthStateChanged, signOut, deleteUser } from 'firebase/auth';
+import { doc, getDoc, updateDoc, deleteDoc, collection, getDocs } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -26,6 +27,7 @@ const ProfileScreen = () => {
   const [units, setUnits] = useState(true);   // true = lbs
   const [isProfileModalVisible, setProfileModalVisible] = useState(false);
   const [isSettingsModalVisible, setSettingsModalVisible] = useState(false);
+  const [isLearnModalVisible, setLearnModalVisible] = useState(false);
 
   const [uid, setUid] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
@@ -159,6 +161,12 @@ const ProfileScreen = () => {
     }
   };
 
+  
+  const handleLearnMore = async () => {
+    
+
+  };
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -172,20 +180,58 @@ const ProfileScreen = () => {
     }
   };
 
-  const handleDelete = async () => {
-    
-    Alert.alert('Delete account ⚠️', 'Are you sure you want to delete your account? This action cannot be undone.', [
-      { text: 'Cancel', style: 'cancel' }, { text: 'Delete', style: 'delete'}]); // if cancel, return 
-    try {
-      await signOut(auth);
-    } catch (e) {
-      console.error('deletion error:', e);
-    } finally {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'FirstScreen'}],
-      });
-    }
+  const handleDelete = () => {
+    Alert.alert(
+      'Delete account ⚠️',
+      'Are you sure you want to delete your account? This cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            const user = auth.currentUser;
+            if (!user) {
+              navigation.reset({ index: 0, routes: [{ name: 'FirstScreen' }] });
+              return;
+            }
+            try {
+              // Remove the user from Firebase Auth so the email can be reused
+              await deleteUser(user);
+              // Clear saved login credentials
+              await AsyncStorage.multiRemove(['savedEmail', 'savedPassword']);
+              // Optionally delete Firestore user data (profile + subcollections)
+              const uid = user.uid;
+              const workoutsSnap = await getDocs(collection(db, 'users', uid, 'workouts'));
+              for (const d of workoutsSnap.docs) {
+                await deleteDoc(doc(db, 'users', uid, 'workouts', d.id));
+              }
+              const goalsSnap = await getDocs(collection(db, 'users', uid, 'goals'));
+              for (const d of goalsSnap.docs) {
+                await deleteDoc(doc(db, 'users', uid, 'goals', d.id));
+              }
+              await deleteDoc(doc(db, 'users', uid));
+            } catch (e) {
+              console.error('Deletion error:', e);
+              const msg = e?.message || String(e);
+              if (msg.includes('requires-recent-login')) {
+                Alert.alert(
+                  'Sign in again',
+                  'For security, please sign out, sign back in, then try Delete Account again.'
+                );
+                return;
+              }
+              Alert.alert('Could not delete account', msg);
+              return;
+            }
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'FirstScreen' }],
+            });
+          },
+        },
+      ]
+    );
   };
 
   if (loadingProfile) {
@@ -220,6 +266,10 @@ const ProfileScreen = () => {
       <TouchableOpacity style={styles.ProfileButtonContainer} onPress={() => setSettingsModalVisible(true)}>
         <Text style={styles.buttonText}>Edit Settings</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity style={styles.ProfileButtonContainer}> 
+          <Text style={styles.buttonText}>Learn More</Text> 
+      </TouchableOpacity> 
 
       <TouchableOpacity style={[styles.ProfileButtonContainer, { backgroundColor: '#FF5757'}]} onPress={handleLogout}>
         <Text style={styles.buttonText}>Logout</Text>
@@ -303,6 +353,11 @@ const ProfileScreen = () => {
             </TouchableOpacity>
           </View>
         </ScrollView>
+      </Modal>
+
+      {/* Learn More Modal */}
+      <Modal visible={isLearnModalVisible} animationType='fade' transparent={false} >
+         {/* write stuff about me and why i created app and such */}
       </Modal>
     </ScrollView>
   );
