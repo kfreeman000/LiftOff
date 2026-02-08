@@ -90,7 +90,7 @@ export default function SignIn() {
               text: 'Resend verification',
               onPress: async () => {
                 try {
-                  await sendEmailVerification(userCredential.user);
+                  await sendEmailVerification(userCredential.user); // sendEmailVer is a built in FireBase thing
                   Alert.alert('Sent', 'Verification email sent.');
                 } catch (e) {
                   Alert.alert('Could not send', e?.message ?? 'Please try again.');
