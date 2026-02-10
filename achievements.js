@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Image, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, FlatList, Animated, Alert, Keyboard, Modal } from 'react-native';
 import { db, auth } from './firebase';
-import { collection, query, getDocs, orderBy, addDoc, serverTimestamp, deleteDoc, doc } from 'firebase/firestore'; 
+import { collection, query, getDocs, getDoc, updateDoc, setDoc, orderBy, addDoc, serverTimestamp, deleteDoc, doc } from 'firebase/firestore'; 
 import styles from './style.js'; 
 import { SwipeListView } from 'react-native-swipe-list-view';
 
 
 const achievements = [
-  { id: '1', title: 'Muscle Power', details: 'You increased weight in a workout!', image: require('./assets/mp.jpg') },
-  { id: '2', title: 'Workout Star', details: 'Completed a five-day workout week!', image: require('./assets/fiveDay.png') },
-  { id: '3', title: 'Goal Setter', details: 'You created your own unique goal!', image: require('./assets/gs.png') },
+  { key: '1', title: 'Muscle Power', details: 'You increased weight in a workout!', image: require('./assets/mp.jpg') },
+  { key: '2', title: 'Workout Star', details: 'Completed a five-day workout week!', image: require('./assets/fiveDay.png') },
+  { key: '3', title: 'Goal Setter', details: 'You created your own unique goal!', image: require('./assets/gs.png') },
 ];
+
+
+
 
 const AchievementsForm = ({ navigation }) => {
   return (
@@ -32,6 +35,22 @@ const AchievementsForm = ({ navigation }) => {
   );
 };
 
+
+async function AwardAchievement(uid, key) {
+  const userRef = doc(db, "users", uid);
+  const snap = await getDoc(userRef);
+
+  if (!snap.exists()) return;
+
+  const achievements = snap.data().achievements || {};
+
+  if (achievements[key]) return; //already earned 
+
+  await updateDoc(userRef, {
+    [`achievements.${key}`]: true,
+  });
+}
+
 // view achievemnets button with flip animation for each achievement
 const ViewAchievementsForm = () => {
   const flipAnim = useRef({}).current;
@@ -39,41 +58,41 @@ const ViewAchievementsForm = () => {
 
   useEffect(() => {
     achievements.forEach((item) => {
-      if (!flipAnim[item.id]) {
-        flipAnim[item.id] = new Animated.Value(0);
+      if (!flipAnim[item.key]) {
+        flipAnim[item.key] = new Animated.Value(0);
       }
     });
   }, []);
 
-  const flipCard = (id) => {
-    const isFlipped = flippedCards[id] || false;
+  const flipCard = (key) => {
+    const isFlipped = flippedCards[key] || false;
 
-    Animated.timing(flipAnim[id], {
+    Animated.timing(flipAnim[key], {
       toValue: isFlipped ? 0 : 1,
       duration: 300,
       useNativeDriver: true,
     }).start();
 
-    setFlippedCards((prev) => ({ ...prev, [id]: !isFlipped }));
+    setFlippedCards((prev) => ({ ...prev, [key]: !isFlipped }));
   };
 
   const renderCard = ({ item }) => {
-    if (!flipAnim[item.id]) {
-      flipAnim[item.id] = new Animated.Value(0);
+    if (!flipAnim[item.key]) {
+      flipAnim[item.key] = new Animated.Value(0);
     }
 
-    const frontOpacity = flipAnim[item.id].interpolate({
+    const frontOpacity = flipAnim[item.key].interpolate({
       inputRange: [0, 1],
       outputRange: [1, 0],
     });
 
-    const backOpacity = flipAnim[item.id].interpolate({
+    const backOpacity = flipAnim[item.key].interpolate({
       inputRange: [0, 0.01, 1],
       outputRange: [0, 0, 1],
     });
 
     return (
-      <TouchableOpacity onPress={() => flipCard(item.id)} style={{ width: 150, height: 150, margin: 10 }}>
+      <TouchableOpacity onPress={() => flipCard(item.key)} style={{ width: 150, height: 150, margin: 10 }}>
         <Animated.View style={[styles.cardFace, { opacity: frontOpacity }]}>
           <Text style={styles.achievementTitle}>{item.title}</Text>
           <Image source={item.image} style={styles.achievementImage} />
@@ -90,7 +109,7 @@ const ViewAchievementsForm = () => {
     <View style={styles.container}>
       <FlatList
         data={achievements}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.key}
         renderItem={renderCard}
         
       />
@@ -98,7 +117,7 @@ const ViewAchievementsForm = () => {
   );
 };
 
-// create goal button
+// ADD GOALS
 const addGoal = async (goal) => {
   try {
     const uid = auth.currentUser?.uid;
@@ -155,7 +174,9 @@ const CreateGoalForm = () => {
   );
 };
 
-// view goals button
+
+
+// VIEW GOALS 
 const ViewGoalsForm = () => {
   const [goals, setGoals] = useState([]);
   const [selectedGoal, setSelectedGoal] = useState(null);
@@ -266,4 +287,4 @@ const ViewGoalsForm = () => {
 };
 
 
-export { AchievementsForm, ViewAchievementsForm, ViewGoalsForm, CreateGoalForm};
+export { AchievementsForm, ViewAchievementsForm, ViewGoalsForm, CreateGoalForm, AwardAchievement};

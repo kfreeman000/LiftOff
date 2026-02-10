@@ -1,11 +1,12 @@
 // submit workouts button 
 
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, getDocs, doc, collection } from 'firebase/firestore';
 import React, { useState, useRef } from 'react';
 import { Alert, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard, View} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { db, auth } from './firebase'; // Your firestore config
+import { db, auth } from './firebase'; 
 import styles from './style';
+import { AwardAchievement } from './achievements';
 
 const AddWorkout = () => {
   const [workout, setWorkout] = useState('Bench');
@@ -35,15 +36,23 @@ const AddWorkout = () => {
         return;
       }
 
-      await addDoc(collection(db, 'users', uid, 'workouts'), {
+      const locationToStore = collection(db, "users", uid, "workouts");
+      const existing = await getDocs(locationToStore);
+
+      await addDoc(locationToStore), { // current error here when submitting workout
       workout,
       reps: repsValue,
       sets: setsValue,
       weight: parseInt(weight, 10),
       comments,
         date: new Date(),
-      });
+      };
       Alert.alert("workout stored 🔥");
+
+      if (existing.empty) {
+        await AwardAchievement(uid, "workoutStar")
+      };
+
       // Clear the form after adding the workout
       setWorkout('');
       setReps('');
