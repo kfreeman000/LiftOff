@@ -36,7 +36,7 @@ const AchievementsForm = ({ navigation }) => {
 };
 
 
-async function AwardAchievement(uid, key) {
+async function AwardAchievement(uid, key) { // for achievements page; still need functions for each specific achievement
   const userRef = doc(db, "users", uid);
   const snap = await getDoc(userRef);
 
@@ -51,10 +51,56 @@ async function AwardAchievement(uid, key) {
   });
 }
 
+async function maybeAwardWorkoutAchievements(uid, exerciseName, newWeight) {
+  const workoutsRef = collection(db, "users", uid, "workouts");
+  const workoutsSnap = await getDocs(workoutsRef);
+
+  // first workout logged
+  if (workoutsSnap.size === 1) {
+    await AwardAchievement(uid, "workoutStar");
+  }
+
+  // muscle power (increase in weight)
+  const q = query(
+    workoutsRef,
+    where("exercise", "==", exerciseName),
+    orderBy("weight", "desc"),
+    limit(1)
+  );
+
+  const snap = await getDocs(q);
+
+  if (!snap.empty) {
+    const prevMax = snap.docs[0].data().weight;
+    if (newWeight > prevMax) {
+      await AwardAchievement(uid, "musclePower");
+    }
+  }
+}
+
+
+async function GoalSetter_achievement(uid, key) {
+
+}
+
+async function getEarnedAchievements(uid) {
+  const userRef = doc(db, "users", uid);
+  const snap = await getDoc(userRef);
+
+  if (!snap.exists()) return {};
+
+  return snap.data().achievements || {};
+}
+
+
+
 // view achievemnets button with flip animation for each achievement
 const ViewAchievementsForm = () => {
+
+
   const flipAnim = useRef({}).current;
   const [flippedCards, setFlippedCards] = useState({});
+  const [earned, setEarned] = useState({}); // how many achievements are shown 
 
   useEffect(() => {
     achievements.forEach((item) => {
@@ -63,6 +109,16 @@ const ViewAchievementsForm = () => {
       }
     });
   }, []);
+
+  const uid = auth.currentUser?.uid;
+  useEffect(() => {
+    
+    if (uid) {
+      getEarnedAchievements(uid).then(setEarned);
+    }
+      }, []);
+
+  const earnedList = achievements.filter(a => earned[a.key]);
 
   const flipCard = (key) => {
     const isFlipped = flippedCards[key] || false;
@@ -107,11 +163,16 @@ const ViewAchievementsForm = () => {
 
   return (
     <View style={styles.container}>
+      {earnedList.length === 0 && (
+        <Text style={{ fontStyle: 'italic' }}>
+          no achievements yet
+        </Text>
+      )}
+
       <FlatList
-        data={achievements}
+        data={earnedList}
         keyExtractor={(item) => item.key}
         renderItem={renderCard}
-        
       />
     </View>
   );
@@ -287,4 +348,4 @@ const ViewGoalsForm = () => {
 };
 
 
-export { AchievementsForm, ViewAchievementsForm, ViewGoalsForm, CreateGoalForm, AwardAchievement};
+export { AchievementsForm, ViewAchievementsForm, ViewGoalsForm, CreateGoalForm, AwardAchievement, maybeAwardWorkoutAchievements, GoalSetter_achievement};

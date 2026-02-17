@@ -6,7 +6,7 @@ import { Alert, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, Key
 import { Picker } from '@react-native-picker/picker';
 import { db, auth } from './firebase'; 
 import styles from './style';
-import { AwardAchievement } from './achievements';
+import { AwardAchievement, maybeAwardWorkoutAchievements } from './achievements';
 
 const AddWorkout = () => {
   const [workout, setWorkout] = useState('Bench');
@@ -48,10 +48,11 @@ const AddWorkout = () => {
         date: new Date(),
       };
       Alert.alert("workout stored 🔥");
+      maybeAwardWorkoutAchievements(uid, workout, weight);
 
-      if (existing.empty) {
-        await AwardAchievement(uid, "workoutStar")
-      };
+      // if (existing.empty) {
+      //   await AwardAchievement(uid, "workoutStar")
+      // };
 
       // Clear the form after adding the workout
       setWorkout('');

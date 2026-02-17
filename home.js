@@ -75,17 +75,17 @@ function AchievementsStackScreen() {
       <AchievementsStack.Screen
         name="AchievementsMain"
         component={AchievementsForm}
-        options={{ title: "Achievements" }}
+        options={{ title: "Achievements", headerShown: "false" }}
       />
       <AchievementsStack.Screen
         name="ViewAchievements"
         component={ViewAchievementsForm}
-        options={{ title: "View Achievements" }}
+        options={{ title: "View Achievements", headerShown: "false" }}
       />
       <AchievementsStack.Screen
         name="CreateGoal"
         component={CreateGoalForm}
-        options={{ title: "Create Goal" }}
+        options={{ title: "Create Goal", headerShown: "false" }}
       />
       <AchievementsStack.Screen
         name="ViewGoals"

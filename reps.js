@@ -181,7 +181,7 @@ const WorkoutsList = () => {
           disableRightSwipe
         />
       ) : (
-        <Text style={{ marginTop: 20, fontSize: 16 }}>
+        <Text style={{ marginTop: 20, fontSize: 16, fontStyle: 'italic' }}>
           No {selectedExercise} sets found yet. Log a workout first!
         </Text>
       )}
