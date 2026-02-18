@@ -8,8 +8,10 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 
 const achievements = [
   { key: '1', title: 'Muscle Power', details: 'You increased weight in a workout!', image: require('./assets/mp.jpg') },
-  { key: '2', title: 'Getting Started', details: 'You logged your first workout!', image: require('./assets/fiveDay.png') },
+  { key: '2', title: 'Getting Started', details: 'You logged your first workout!', image: require('./assets/first.png') },
   { key: '3', title: 'Goal Setter', details: 'You logged your first goal!', image: require('./assets/gs.png') },
+  { key: '4', title: 'Friend Finder', details: 'Your first friend was added!', image: require('./assets/friend.png')},
+  { key: '5', title: 'Community Driven', details: 'At least 10 friends have been added!', image: require('./assets/community.png')}
 ];
 
 
