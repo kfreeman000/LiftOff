@@ -60,7 +60,7 @@ async function maybeAwardWorkoutAchievements(uid, exerciseName, newWeight) {
     await AwardAchievement(uid, '2'); // getting started 
   }
 
-  // muscle power (increase in weight)
+  // muscle power (increase in weight) -- currently not working 
   const q = query(
     workoutsRef,
     where("exercise", "==", exerciseName),
@@ -80,7 +80,7 @@ async function maybeAwardWorkoutAchievements(uid, exerciseName, newWeight) {
 
 
 async function GoalSetter_achievement(uid, key) {
-
+  await AwardAchievement(uid, key);
 }
 
 async function getEarnedAchievements(uid) {
@@ -180,15 +180,18 @@ const ViewAchievementsForm = () => {
 
 // ADD GOALS
 const addGoal = async (goal) => {
+  const uid = auth.currentUser?.uid;
+   
   try {
-    const uid = auth.currentUser?.uid;
+  
     if (!uid) {
       throw new Error('You must be signed in to create a goal.');
     }
-    await addDoc(collection(db, 'users', uid, 'goals'), {
+    await addDoc(collection(db, "users", uid, "goals"), {
       goal,
       timestamp: serverTimestamp(),
     });
+   
   } catch (error) {
     throw new Error('Failed to save goal: ' + error.message);
   }
@@ -198,6 +201,7 @@ const addGoal = async (goal) => {
 const CreateGoalForm = () => {
   const [goal, setGoal] = useState('');
   const inputRef = useRef(null);
+  
 
   const saveGoal = async () => {
     if (!goal.trim()) {
@@ -206,9 +210,20 @@ const CreateGoalForm = () => {
     }
 
     try {
+
+      const uid = auth.currentUser?.uid;
+      const goalsRef = collection(db, "users", uid, "goals");
+      const goalsSnap = await getDocs(goalsRef);
+      
       await addGoal(goal); // Save goal to Firestore
       Alert.alert('success', 'goal saved!✅');
+
+      if (goalsSnap.size == 0) {
+        await GoalSetter_achievement(uid, '3');
+      }  
+
       setGoal(''); // Clear input
+      
       inputRef.current?.blur();
     } catch (e) {
       Alert.alert('Error', e.message);

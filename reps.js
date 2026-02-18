@@ -127,9 +127,9 @@ const WorkoutsList = () => {
   const renderItem = ({ item }) => (
     <View style={styles.item}>
       <Text style={styles.itemText}>Workout: {item.workout}</Text>
+      <Text style={styles.itemText}>Weight: {item.weight}</Text>
       <Text style={styles.itemText}>Reps: {item.reps}</Text>
       <Text style={styles.itemText}>Sets: {item.sets}</Text>
-      <Text style={styles.itemText}>Weight: {item.weight}</Text>
       <Text style={styles.itemText}>Comments: {item.comments}</Text>
       <Text style={styles.itemText}>Date: {item.date ? item.date.toLocaleDateString() : 'No date'}</Text>
     </View>
@@ -194,9 +194,9 @@ const WorkoutsList = () => {
           <View style={styles.modalContent}>
             <Text style={{ fontWeight: 'bold', marginBottom: 10 }}>Edit Workout: {editingWorkout?.workout}</Text>
             
+            <TextInput placeholder="Weight" value={editWeight} onChangeText={setEditWeight} keyboardType="numeric" style={styles.input} />
             <TextInput placeholder="Reps" value={editReps} onChangeText={setEditReps} keyboardType="numeric" style={styles.input} />
             <TextInput placeholder="Sets" value={editSets} onChangeText={setEditSets} keyboardType="numeric" style={styles.input} />
-            <TextInput placeholder="Weight" value={editWeight} onChangeText={setEditWeight} keyboardType="numeric" style={styles.input} />
             <TextInput placeholder="Comments" value={editComments} onChangeText={setEditComments} style={styles.input} />
 
             <View style={styles.modalButtons}>
