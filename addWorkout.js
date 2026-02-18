@@ -39,14 +39,23 @@ const AddWorkout = () => {
       const locationToStore = collection(db, "users", uid, "workouts");
       const existing = await getDocs(locationToStore);
 
-      await addDoc(locationToStore), { // current error here when submitting workout
-      workout,
-      reps: repsValue,
-      sets: setsValue,
-      weight: parseInt(weight, 10),
-      comments,
+      console.log("WORKOUT OBJECT:", {
+        workout,
+        reps: repsValue,
+        sets: setsValue,
+        weight,
         date: new Date(),
-      };
+        comments,
+      });
+
+      await addDoc(locationToStore, {
+        workout,
+        reps: repsValue,
+        sets: setsValue,
+        weight: parseInt(weight, 10),
+        comments,
+        date: new Date(),
+      });
       Alert.alert("workout stored 🔥");
       maybeAwardWorkoutAchievements(uid, workout, weight);
 

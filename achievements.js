@@ -8,8 +8,8 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 
 const achievements = [
   { key: '1', title: 'Muscle Power', details: 'You increased weight in a workout!', image: require('./assets/mp.jpg') },
-  { key: '2', title: 'Workout Star', details: 'Completed a five-day workout week!', image: require('./assets/fiveDay.png') },
-  { key: '3', title: 'Goal Setter', details: 'You created your own unique goal!', image: require('./assets/gs.png') },
+  { key: '2', title: 'Getting Started', details: 'You logged your first workout!', image: require('./assets/fiveDay.png') },
+  { key: '3', title: 'Goal Setter', details: 'You logged your first goal!', image: require('./assets/gs.png') },
 ];
 
 
@@ -57,7 +57,7 @@ async function maybeAwardWorkoutAchievements(uid, exerciseName, newWeight) {
 
   // first workout logged
   if (workoutsSnap.size === 1) {
-    await AwardAchievement(uid, "workoutStar");
+    await AwardAchievement(uid, '2'); // getting started 
   }
 
   // muscle power (increase in weight)
@@ -73,7 +73,7 @@ async function maybeAwardWorkoutAchievements(uid, exerciseName, newWeight) {
   if (!snap.empty) {
     const prevMax = snap.docs[0].data().weight;
     if (newWeight > prevMax) {
-      await AwardAchievement(uid, "musclePower");
+      await AwardAchievement(uid, '1');
     }
   }
 }

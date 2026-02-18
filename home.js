@@ -68,24 +68,23 @@ function AchievementsStackScreen() {
     <AchievementsStack.Navigator
       initialRouteName="AchievementsMain"
       screenOptions={{
-        headerTintColor: '#60B5F9',
-        headerTitleAlign: 'center'
+        headerShown: false,
       }}
     >
       <AchievementsStack.Screen
         name="AchievementsMain"
         component={AchievementsForm}
-        options={{ title: "Achievements", headerShown: "false" }}
+        options={{ title: "Achievements", }}
       />
       <AchievementsStack.Screen
         name="ViewAchievements"
         component={ViewAchievementsForm}
-        options={{ title: "View Achievements", headerShown: "false" }}
+        options={{ title: "View Achievements" }}
       />
       <AchievementsStack.Screen
         name="CreateGoal"
         component={CreateGoalForm}
-        options={{ title: "Create Goal", headerShown: "false" }}
+        options={{ title: "Create Goal", }}
       />
       <AchievementsStack.Screen
         name="ViewGoals"
