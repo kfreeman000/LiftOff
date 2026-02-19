@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Image, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, FlatList, Animated, Alert, Keyboard, Modal } from 'react-native';
 import { db, auth } from './firebase';
-import { collection, query, getDocs, getDoc, updateDoc, setDoc, orderBy, addDoc, serverTimestamp, deleteDoc, doc } from 'firebase/firestore'; 
+import { collection, query, getDocs, getDoc, updateDoc, orderBy, addDoc, serverTimestamp, deleteDoc, doc, limit, where } from 'firebase/firestore'; 
 import styles from './style.js'; 
 import { SwipeListView } from 'react-native-swipe-list-view';
 
@@ -55,14 +55,7 @@ async function AwardAchievement(uid, key) { // for achievements page; still need
 
 async function maybeAwardWorkoutAchievements(uid, exerciseName, newWeight) {
   const workoutsRef = collection(db, "users", uid, "workouts");
-  const workoutsSnap = await getDocs(workoutsRef);
 
-  // first workout logged
-  if (workoutsSnap.size === 1) {
-    await AwardAchievement(uid, '2'); // getting started 
-  }
-
-  // muscle power (increase in weight) -- currently not working 
   const q = query(
     workoutsRef,
     where("exercise", "==", exerciseName),
@@ -72,8 +65,16 @@ async function maybeAwardWorkoutAchievements(uid, exerciseName, newWeight) {
 
   const snap = await getDocs(q);
 
+  // GETTING STARTED
+  const allSnap = await getDocs(workoutsRef);
+  if (allSnap.size === 0) {
+    await AwardAchievement(uid, '2');
+  }
+
+  // MUSCLE POWER
   if (!snap.empty) {
     const prevMax = snap.docs[0].data().weight;
+
     if (newWeight > prevMax) {
       await AwardAchievement(uid, '1');
     }

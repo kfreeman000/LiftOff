@@ -102,7 +102,7 @@ const querySnapshot = await getDocs(q);
             <Text style={styles.buttonText}>Calculate</Text>
           </TouchableOpacity>
 
-            <Text style={styles.estimationText}>Estimated {selectedExercise} 1 rep max = </Text>
+            <Text style={styles.estimationText}>Estimated {selectedExercise} 1 rep max = {best.oneRM} </Text>
 
         </View>
       ) : (
