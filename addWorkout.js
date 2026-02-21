@@ -23,7 +23,7 @@ const AddWorkout = () => {
           return;
     }
     if (!weight.trim()) {
-          Alert.alert('please log weight used ❌');
+          Alert.alert('Please log weight used ❌');
           return;
     }      
   const repsValue = reps.trim() ? parseInt(reps, 10) : 'unknown';
@@ -48,7 +48,7 @@ const AddWorkout = () => {
         comments,
       });
 
-      await maybeAwardWorkoutAchievements(uid, workout, weight);
+      await maybeAwardWorkoutAchievements(uid, workout, Number(weight));
 
       await addDoc(locationToStore, {
         workout,

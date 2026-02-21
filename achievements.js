@@ -58,7 +58,7 @@ async function maybeAwardWorkoutAchievements(uid, exerciseName, newWeight) {
 
   const q = query(
     workoutsRef,
-    where("exercise", "==", exerciseName),
+    where("workout", "==", exerciseName),
     orderBy("weight", "desc"),
     limit(1)
   );
@@ -73,7 +73,7 @@ async function maybeAwardWorkoutAchievements(uid, exerciseName, newWeight) {
 
   // MUSCLE POWER
   if (!snap.empty) {
-    const prevMax = snap.docs[0].data().weight;
+    const prevMax = Number(snap.docs[0].data().weight);
 
     if (newWeight > prevMax) {
       await AwardAchievement(uid, '1');
@@ -157,8 +157,8 @@ const ViewAchievementsForm = () => {
           <Image source={item.image} style={styles.achievementImage} />
         </Animated.View>
 
-        <Animated.View style={[styles.cardFace, { opacity: backOpacity, backgroundColor: '#ccc' }]}>
-          <Text style={{ fontSize: 18 }}>{item.details}</Text>
+        <Animated.View style={[styles.cardFace, { opacity: backOpacity, backgroundColor: '#56c5f5', borderRadius:10, borderWidth: 1, borderColor: 'white', padding: 10}]}>
+          <Text style={{ fontSize: 18, color: 'white', fontFamily: 'Comfortaa-Bold', fontWeight: 'bold' }}>{item.details}</Text>
         </Animated.View>
       </TouchableOpacity>
     );
@@ -172,7 +172,7 @@ const ViewAchievementsForm = () => {
         </Text>
       )}
 
-      <FlatList
+      <FlatList style={[]}
         data={earnedList}
         keyExtractor={(item) => item.key}
         renderItem={renderCard}
