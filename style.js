@@ -124,10 +124,11 @@ achievementItem: {
   marginVertical: 10,
 },
   achievementImage: {
-    width: 50,
-    height: 50,
+    width: 60,
+    height: 60,
     borderRadius: 25,
-    marginRight: 15,
+    alignSelf: "center",
+    
   },
   achievementTitle: {
     fontSize: 18,

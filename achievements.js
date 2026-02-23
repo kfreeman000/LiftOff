@@ -151,7 +151,7 @@ const ViewAchievementsForm = () => {
     });
 
     return (
-      <TouchableOpacity onPress={() => flipCard(item.key)} style={{ width: 150, height: 150, margin: 10 }}>
+      <TouchableOpacity onPress={() => flipCard(item.key)} style={styles.container}>
         <Animated.View style={[styles.cardFace, { opacity: frontOpacity }]}>
           <Text style={styles.achievementTitle}>{item.title}</Text>
           <Image source={item.image} style={styles.achievementImage} />
@@ -172,7 +172,7 @@ const ViewAchievementsForm = () => {
         </Text>
       )}
 
-      <FlatList style={[]}
+      <FlatList 
         data={earnedList}
         keyExtractor={(item) => item.key}
         renderItem={renderCard}
