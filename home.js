@@ -21,9 +21,8 @@ function HomeMainScreen ({ navigation }) {
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', paddingTop: 0 }}>
-          <Image source={require('./assets/liftoff_logo.png')} style={{ width: 200, height: 200, position: 'absolute', top: 40 }} />
+          <Image source={require('./assets/liftoff_logo.png')} style={{ width: 250, height: 200, position: 'absolute', top: 70 }} />
           <Text>{'\n\n'}{'\n\n'}{'\n\n'}{'\n\n'}{'\n\n'}</Text>
-
       <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate("Reps")}>
         <Text style={styles.buttonText}>View Workouts</Text>
       </TouchableOpacity>

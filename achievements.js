@@ -20,7 +20,7 @@ const achievements = [
 const AchievementsForm = ({ navigation }) => {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: 'white', paddingTop: 0 }}>
-      <Image source={require('./assets/liftoff_logo.png')} style={{ width: 200, height: 200, position: 'absolute', top: 30 }} />
+      <Image source={require('./assets/liftoff_logo.png')} style={{ width: 250, height: 200, position: 'absolute', top: 70 }} />
       <Text>{'\n\n'}{'\n\n'}{'\n\n'}{'\n\n'}{'\n\n'}</Text>
       <TouchableOpacity style={styles.buttonContainer} onPress={() => navigation.navigate('ViewAchievements')} activeOpacity={0.2}>
         <Text style={styles.buttonText}>View Achievements</Text>

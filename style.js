@@ -118,14 +118,16 @@ item: {
 itemText: {
   fontSize: 16,
 },
+
+// view achievements page
 achievementItem: {
   flexDirection: 'row',
   alignItems: 'center',
   marginVertical: 10,
 },
   achievementImage: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 55,
     borderRadius: 25,
     alignSelf: "center",
     
