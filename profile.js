@@ -5,6 +5,7 @@ import { View, Image, TouchableOpacity, Alert, ScrollView, Switch, Modal, Text, 
 import * as ImagePicker from 'expo-image-picker';
 import styles from './style.js';
 import { useNavigation } from '@react-navigation/native';
+import { Picker } from '@react-native-picker/picker';
 
 import { auth, db } from './firebase';
 import { onAuthStateChanged, signOut, deleteUser } from 'firebase/auth';
@@ -21,6 +22,12 @@ const ProfileScreen = () => {
   const [email, setEmail] = useState('');
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
+  const [weightModalVisible, setWeightModalVisible] = useState(false);
+  const [heightModalVisible, setHeightModalVisible] = useState(false);
+  const [weightPickerValue, setWeightPickerValue] = useState(150);
+  const [weightUnit, setWeightUnit] = useState('lbs');
+  const [heightPickerValue, setHeightPickerValue] = useState(170);
+  const [heightUnit, setHeightUnit] = useState('cm');
   const [gender, setGender] = useState('');
   const [dob, setDob] = useState('');
   const [publicP, setPublicP] = useState(false);  // true = public profile
@@ -296,10 +303,172 @@ const ProfileScreen = () => {
 
           <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={email} onChangeText={setEmail} placeholder="Email" autoCapitalize="none" />
 
-          <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={height} keyboardType='numeric' onChangeText={setHeight} placeholder="Height" />
+          <TouchableOpacity
+          style={[styles.input, { justifyContent: 'center', backgroundColor: "white" }]}
+          onPress={() => {
 
-          <TextInput placeholderTextColor="#BFBFBF" style={styles.input} value={weight} keyboardType='numeric' onChangeText={setWeight} placeholder="Weight" />
+            if (height) {
+              const match = height.match(/^(\d+)\s*(cm|in|inches)?$/i);
+              if (match) {
+                setHeightPickerValue(parseInt(match[1], 10));
+                setHeightUnit((match[2] || 'cm').toLowerCase() === 'in' || (match[2] || '').toLowerCase() === 'inches' ? 'in' : 'cm');
+              }
+            } else {
+              setHeightPickerValue(170);
+              setHeightUnit('cm');
+            }
+            setHeightModalVisible(true);
+          }}
+        >
+          <Text style={{ color: height ? 'black' : '#BFBFBF' }}>
+            {height || 'Height'}
+          </Text>
+        </TouchableOpacity>
 
+        {/* Height modal - number + unit pickers -- other modals within a modal must have their modal code within modal tags*/}
+      <Modal visible={heightModalVisible} transparent animationType="slide">
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'flex-end',
+            backgroundColor: 'rgba(0,0,0,0.4)',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: 'white',
+              padding: 20,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              width: '100%',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={[styles.editText, { marginBottom: 8 }]}>Height</Text>
+            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center' }}>
+              <Picker
+                selectedValue={heightPickerValue}
+                onValueChange={setHeightPickerValue}
+                style={{ flex: 1, maxWidth: 120 }}
+                itemStyle={{ color: 'black', fontFamily: 'Comfortaa-Bold' }}
+              >
+                {(heightUnit === 'cm'
+                  ? Array.from({ length: 151 }, (_, i) => i + 100)
+                  : Array.from({ length: 49 }, (_, i) => i + 48)
+                ).map((n) => (
+                  <Picker.Item key={n} label={String(n)} value={n} />
+                ))}
+              </Picker>
+              <Picker
+                selectedValue={heightUnit}
+                onValueChange={(unit) => {
+                  setHeightUnit(unit);
+                  if (unit === 'cm' && (heightPickerValue < 100 || heightPickerValue > 250)) {
+                    setHeightPickerValue(170);
+                  }
+                  if (unit === 'in' && (heightPickerValue < 48 || heightPickerValue > 96)) {
+                    setHeightPickerValue(70);
+                  }
+                }}
+                style={{ flex: 1, maxWidth: 100 }}
+                itemStyle={{ color: 'black', fontFamily: 'Comfortaa-Bold' }}
+              >
+                <Picker.Item label="cm" value="cm" />
+                <Picker.Item label="in" value="in" />
+              </Picker>
+            </View>
+            <TouchableOpacity
+              style={[styles.ProfileButtonContainer, { marginTop: 10 }]}
+              onPress={() => {
+                setHeight(`${heightPickerValue} ${heightUnit}`);
+                setHeightModalVisible(false);
+              }}
+            >
+              <Text style={styles.buttonText}>Done</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        </Modal>
+
+          <TouchableOpacity
+          style={[styles.input, { justifyContent: 'center', backgroundColor: "white" }]}
+          onPress={() => {
+            if (weight) {
+              const match = weight.match(/^(\d+)\s*(lbs|kg)?$/i);
+              if (match) {
+                setWeightPickerValue(parseInt(match[1], 10));
+                setWeightUnit((match[2] || 'lbs').toLowerCase() === 'kg' ? 'kg' : 'lbs');
+              }
+            } else {
+              setWeightPickerValue(150);
+              setWeightUnit('lbs');
+            }
+            setWeightModalVisible(true);
+          }}
+        >
+          <Text style={{ color: weight ? 'black' : '#BFBFBF' }}>
+            {weight || 'Weight'}
+          </Text>
+        </TouchableOpacity>
+
+         {/* Weight modal - number + unit pickers */}
+      <Modal visible={weightModalVisible} transparent animationType="slide">
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'flex-end',
+            backgroundColor: 'rgba(0,0,0,0.4)',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: 'white',
+              padding: 20,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+              width: '100%',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={[styles.editText, { marginBottom: 8 }]}>Weight</Text>
+            <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center' }}>
+              <Picker
+                selectedValue={weightPickerValue}
+                onValueChange={setWeightPickerValue}
+                style={{ flex: 1, maxWidth: 120 }}
+                itemStyle={{ color: 'black', fontFamily: 'Comfortaa-Bold' }}
+              >
+                {Array.from({ length: 281 }, (_, i) => i + 20).map((n) => (
+                  <Picker.Item key={n} label={String(n)} value={n} />
+                ))}
+              </Picker>
+              <Picker
+                selectedValue={weightUnit}
+                onValueChange={setWeightUnit}
+                style={{ flex: 1, maxWidth: 100 }}
+                itemStyle={{ color: 'black', fontFamily: 'Comfortaa-Bold' }}
+              >
+                <Picker.Item label="lbs" value="lbs" />
+                <Picker.Item label="kg" value="kg" />
+              </Picker>
+            </View>
+            <TouchableOpacity
+              style={[styles.ProfileButtonContainer, { marginTop: 10 }]}
+              onPress={() => {
+                setWeight(`${weightPickerValue} ${weightUnit}`);
+                setWeightModalVisible(false);
+              }}
+            >
+              <Text style={styles.buttonText}>Done</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+
+          
           <View style={{ marginTop: 30, alignItems: 'center' }}>
             <TouchableOpacity style={[styles.ProfileButtonContainer, { marginBottom: 10 }]} onPress={saveProfile}>
               <Text style={styles.buttonText}>Save Changes</Text>
@@ -311,6 +480,8 @@ const ProfileScreen = () => {
           </View>
         </ScrollView>
       </Modal>
+
+     
 
       {/* Settings Modal */}
       <Modal visible={isSettingsModalVisible} animationType='fade' transparent={false}>
