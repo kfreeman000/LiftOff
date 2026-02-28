@@ -83,15 +83,15 @@ export default function SignIn() {
       // Require email verification before letting users into the app.
       if (!userCredential.user.emailVerified) {
         Alert.alert(
-          'Verify your email',
-          'Please verify your email address before signing in.',
+          'Verify your email 🔎',
+          "Let's verify your email address before signing in. It miight have gone to the junk folder 🗑️",
           [
             {
               text: 'Resend verification',
               onPress: async () => {
                 try {
                   await sendEmailVerification(userCredential.user); // sendEmailVer is a built in FireBase thing
-                  Alert.alert('Sent', 'Verification email sent.');
+                  Alert.alert('Sent 📨', 'Verification email sent.');
                 } catch (e) {
                   Alert.alert('Could not send', e?.message ?? 'Please try again.');
                 }
@@ -113,7 +113,7 @@ export default function SignIn() {
     } catch (error) {
       console.error('Sign in error:', error);
       const errorMessage = error?.message || 'Sign in failed. Please check your email and password.';
-      Alert.alert('Sign in failed', errorMessage);
+      Alert.alert('Sign in failed 🔒', errorMessage);
     } finally {
       setLoading(false);
     }
@@ -125,19 +125,19 @@ export default function SignIn() {
     };
 
     if (!email) {
-      Alert.alert('Reset password', 'Enter your email above, then tap this button.');
+      Alert.alert('Reset password 🔒 ', 'Enter your email above, then tap this button.');
       return;
     }
 
     if (!isValidEmailFormat(email)) {
-      Alert.alert('Reset password', 'Please enter a valid email.');
+      Alert.alert('Reset password 🔒', 'Please enter a valid email.');
       return;
     }
 
     try {
       setLoading(true);
       await sendPasswordResetEmail(auth, email.trim());
-      Alert.alert('Reset email sent', 'Check your inbox for password reset instructions.');
+      Alert.alert('Reset email sent', 'Check out your inbox for password reset instructions. It miight have gone to the junk folder 🗑️');
     } catch (error) {
       Alert.alert('Reset failed', error.message);
     } finally {
