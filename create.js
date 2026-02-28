@@ -152,6 +152,12 @@ export default function CreateAcc() {
       <LinearGradient
       colors={['#e6eff5', '#def0fa', '#71c4f5']}
       style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <TouchableOpacity
+        style={{ position: 'absolute', top: 56, left: 20, zIndex: 10, padding: 8 }}
+        onPress={() => navigation.reset({ index: 0, routes: [{ name: 'FirstScreen' }] })}
+      >
+        <Text style={{ fontSize: 17, color: '#333', fontWeight: '600' }}>← Back</Text>
+      </TouchableOpacity>
       <ScrollView contentContainerStyle={{ padding: 20, alignItems: 'center' }}>
         <Text style={styles.text}>Create Profile</Text>
 
