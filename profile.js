@@ -140,7 +140,7 @@ const ProfileScreen = () => {
       });
 
       setProfileModalVisible(false);
-      Alert.alert("Success", "profile updated!✔️");
+      Alert.alert("Success ✅", "profile updated!");
     } catch (e) {
       console.error('Error saving profile:', e);
       Alert.alert("Error", "Could not update profile.");
@@ -162,7 +162,7 @@ const ProfileScreen = () => {
       });
 
       setSettingsModalVisible(false);
-      Alert.alert("Success ✔️", "settings updated!");
+      Alert.alert("Success ✅", "settings updated!");
     } catch (e) {
       Alert.alert("Error", "Could not update settings.");
     }

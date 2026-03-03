@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { auth, db } from './firebase';
-import { doc, getDoc, collection, query, orderBy, limit, getDocs, addDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, query, orderBy, limit, getDocs, addDoc, deleteDoc, where } from 'firebase/firestore';
 
 const FriendProfile = () => {
   const navigation = useNavigation();
@@ -138,7 +138,7 @@ const FriendProfile = () => {
       );
 
       if (isAlreadyFriend) {
-        Alert.alert('Already Added', 'This user is already in your friends list');
+        Alert.alert('Already Added 🧑‍🤝‍🧑', 'This user is already in your friends list');
         return;
       }
 
@@ -149,10 +149,39 @@ const FriendProfile = () => {
       });
 
       setIsFriend(true);
-      Alert.alert('Success', 'Friend added!');
+      Alert.alert('Success ✅', 'Friend added!');
     } catch (error) {
       console.error('Error adding friend:', error);
       Alert.alert('Error', 'Failed to add friend');
+    }
+  };
+
+  const removeFriend = async () => {
+    try {
+      const uid = auth.currentUser?.uid;
+      if (!uid) {
+        Alert.alert('Error', 'You must be signed in to remove friends');
+        return;
+      }
+
+      const friendsRef = collection(db, 'users', uid, 'friends');
+      const q = query(friendsRef, where('friendUid', '==', friendUid));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        Alert.alert('Not Found', 'This user is not currently in your friends list');
+        setIsFriend(false);
+        return;
+      }
+
+      // Delete all matching friend docs (should typically be just one)
+      await Promise.all(querySnapshot.docs.map((d) => deleteDoc(d.ref)));
+
+      setIsFriend(false);
+      Alert.alert('Removed', 'Friend removed from your list');
+    } catch (error) {
+      console.error('Error removing friend:', error);
+      Alert.alert('Error', 'Failed to remove friend');
     }
   };
 
@@ -230,11 +259,14 @@ const FriendProfile = () => {
         )}
       </View>
 
-      {!isFriend && (
-        <TouchableOpacity style={styles.addButton} onPress={addFriend}>
-          <Text style={styles.addButtonText}>Add Friend</Text>
-        </TouchableOpacity>
-      )}
+      <TouchableOpacity
+        style={isFriend ? styles.removeButton : styles.addButton}
+        onPress={isFriend ? removeFriend : addFriend}
+      >
+        <Text style={styles.addButtonText}>
+          {isFriend ? 'Remove Friend' : 'Add Friend'}
+        </Text>
+      </TouchableOpacity>
 
       {isFriend && (
         <View style={styles.friendBadge}>
@@ -334,6 +366,13 @@ const styles = StyleSheet.create({
   },
   addButton: {
     backgroundColor: '#60B5F9',
+    padding: 15,
+    borderRadius: 32,
+    margin: 20,
+    alignItems: 'center',
+  },
+  removeButton: {
+    backgroundColor: '#FF5757',
     padding: 15,
     borderRadius: 32,
     margin: 20,

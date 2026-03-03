@@ -185,7 +185,7 @@ const FriendList = () => {
         addedAt: new Date(),
       });
 
-      Alert.alert('Success', 'Friend added!');
+      Alert.alert('Success ✅', 'Friend added!');
       loadFriends(); // Reload friends list
     } catch (error) {
       console.error('Error adding friend:', error);
