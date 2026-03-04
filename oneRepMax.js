@@ -1,16 +1,17 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useFocusEffect } from '@react-navigation/native';
 import { auth, db } from "./firebase";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, doc, getDoc } from "firebase/firestore";
 import styles from './style.js';
-import { calculate1RM } from './utils';
+import { calculate1RM, lbsToKg } from './utils';
 
 const PRscreen = () => {
   const [selectedExercise, setSelectedExercise] = useState('Bench');
   const [workouts, setWorkouts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [units, setUnits] = useState('lbs'); // 'lbs' or 'kg'
 
   useFocusEffect(
     useCallback(() => {
@@ -46,6 +47,25 @@ const querySnapshot = await getDocs(q);
     }, [])
   );
 
+  useEffect(() => {
+    const fetchUnits = async () => {
+      try {
+        const uid = auth.currentUser?.uid;
+        if (!uid) return;
+        const userRef = doc(db, 'users', uid);
+        const snap = await getDoc(userRef);
+        if (snap.exists()) {
+          const data = snap.data();
+          const u = (data.units ?? 'lbs');
+          setUnits(u === 'kg' ? 'kg' : 'lbs');
+        }
+      } catch (e) {
+        console.log('Error fetching user units:', e);
+      }
+    };
+    fetchUnits();
+  }, []);
+
   const best = useMemo(() => {
     const relevant = workouts.filter((w) => w.workout === selectedExercise);
 
@@ -72,11 +92,16 @@ const querySnapshot = await getDocs(q);
     if (candidates.length === 0) return null;
 
     const top = candidates.reduce((a, b) => (b.oneRM > a.oneRM ? b : a));
+
+    const oneRmLbs = top.oneRM;
+    const displayOneRm =
+      units === 'kg' ? Math.round(lbsToKg(oneRmLbs)) : Math.round(oneRmLbs);
+
     return {
       ...top,
-      oneRM: Math.round(top.oneRM),
+      oneRMDisplay: displayOneRm,
     };
-  }, [workouts, selectedExercise]);
+  }, [workouts, selectedExercise, units]);
 
   return (
     <View style={styles.PRcontainer}>
@@ -102,7 +127,9 @@ const querySnapshot = await getDocs(q);
             <Text style={styles.buttonText}>Calculate</Text>
           </TouchableOpacity>
 
-            <Text style={styles.estimationText}>Estimated {selectedExercise} 1 rep max = {best.oneRM} </Text>
+            <Text style={styles.estimationText}>
+              Estimated {selectedExercise} 1 rep max = {best.oneRMDisplay} {units}
+            </Text>
 
         </View>
       ) : (

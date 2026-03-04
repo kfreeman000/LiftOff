@@ -2,8 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, TextInput, Modal, ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { collection, getDocs, deleteDoc, doc, updateDoc, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc, updateDoc, query, orderBy, getDoc } from 'firebase/firestore';
 import { db, auth } from './firebase';
+import { formatWeight, lbsToKg, kgToLbs } from './utils';
 import { SwipeListView } from 'react-native-swipe-list-view';
 
 const WorkoutsList = () => {
@@ -17,6 +18,7 @@ const WorkoutsList = () => {
   const [editSets, setEditSets] = useState('');
   const [editWeight, setEditWeight] = useState('');
   const [editComments, setEditComments] = useState('');
+  const [units, setUnits] = useState('lbs'); // 'lbs' or 'kg'
 
   useEffect(() => {
   const fetchWorkouts = async () => {
@@ -57,6 +59,25 @@ const WorkoutsList = () => {
   fetchWorkouts();
 }, []);
 
+  useEffect(() => {
+    const fetchUnits = async () => {
+      try {
+        const uid = auth.currentUser?.uid;
+        if (!uid) return;
+        const userRef = doc(db, 'users', uid);
+        const snap = await getDoc(userRef);
+        if (snap.exists()) {
+          const data = snap.data();
+          const u = (data.units ?? 'lbs');
+          setUnits(u === 'kg' ? 'kg' : 'lbs');
+        }
+      } catch (e) {
+        console.log('Error fetching user units:', e);
+      }
+    };
+    fetchUnits();
+  }, []);
+
   const handleDelete = async (rowKey) => {
     Alert.alert('Delete Workout', 'Are you sure you want to delete this workout?', [
       { text: 'Cancel', style: 'cancel' },
@@ -82,7 +103,20 @@ const WorkoutsList = () => {
     setEditingWorkout(item);
     setEditReps(item.reps?.toString() || '');
     setEditSets(item.sets?.toString() || '');
-    setEditWeight(item.weight?.toString() || '');
+    if (item.weight === 'unknown' || item.weight === null || item.weight === undefined) {
+      setEditWeight('');
+    } else {
+      const base = Number(item.weight);
+      if (!Number.isFinite(base)) {
+        setEditWeight(item.weight?.toString() || '');
+      } else if (units === 'kg') {
+        const kg = lbsToKg(base);
+        const rounded = Math.round(kg * 10) / 10;
+        setEditWeight(rounded.toString());
+      } else {
+        setEditWeight(base.toString());
+      }
+    }
     setEditComments(item.comments || '');
     setEditModalVisible(true);
   };
@@ -98,17 +132,31 @@ const WorkoutsList = () => {
       }
 
       const workoutRef = doc(db, 'users', uid, 'workouts', editingWorkout.id);
+      const repsVal = editReps ? parseInt(editReps, 10) : 'unknown';
+      const setsVal = editSets ? parseInt(editSets, 10) : 'unknown';
+
+      let weightVal = 'unknown';
+      if (editWeight && editWeight.trim().length > 0) {
+        const raw = Number(editWeight);
+        if (!Number.isFinite(raw) || raw <= 0) {
+          Alert.alert('Error', 'Please enter a valid weight.');
+          return;
+        }
+        const weightLbs = units === 'kg' ? kgToLbs(raw) : raw;
+        weightVal = weightLbs;
+      }
+
       await updateDoc(workoutRef, {
-        reps: editReps ? parseInt(editReps) : 'unknown',
-        sets: editSets ? parseInt(editSets) : 'unknown',
-        weight: editWeight ? parseInt(editWeight) : 'unknown',
+        reps: repsVal,
+        sets: setsVal,
+        weight: weightVal,
         comments: editComments,
       });
 
       setWorkouts(prev =>
         prev.map(w =>
           w.id === editingWorkout.id
-            ? { ...w, reps: editReps || 'unknown', sets: editSets || 'unknown', weight: editWeight || 'unknown', comments: editComments }
+            ? { ...w, reps: repsVal, sets: setsVal, weight: weightVal, comments: editComments }
             : w
         )
       );
@@ -127,7 +175,7 @@ const WorkoutsList = () => {
   const renderItem = ({ item }) => (
     <View style={styles.item}>
       <Text style={styles.itemText}>Workout: {item.workout}</Text>
-      <Text style={styles.itemText}>Weight: {item.weight}</Text>
+      <Text style={styles.itemText}>Weight: {formatWeight(item.weight, units)}</Text>
       <Text style={styles.itemText}>Reps: {item.reps}</Text>
       <Text style={styles.itemText}>Sets: {item.sets}</Text>
       <Text style={styles.itemText}>Comments: {item.comments}</Text>

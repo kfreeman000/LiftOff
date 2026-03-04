@@ -169,7 +169,7 @@ const ProfileScreen = () => {
   };
 
   
-  const handleLearnMore = async () => {
+  const handleLearnMore = async () => { // TO DO 
     
 
   };

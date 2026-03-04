@@ -12,6 +12,7 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { auth, db } from './firebase';
 import { doc, getDoc, collection, query, orderBy, limit, getDocs, addDoc, deleteDoc, where } from 'firebase/firestore';
+import { formatWeight } from './utils';
 
 const FriendProfile = () => {
   const navigation = useNavigation();
@@ -69,6 +70,7 @@ const FriendProfile = () => {
         name: userData.name || 'Unknown',
         photoURL: userData.photoURL || defaultPic,
         createdAt: userData.createdAt,
+        units: (userData.units ?? 'lbs') === 'kg' ? 'kg' : 'lbs',
       });
       setLastWorkout(workout);
     } catch (error) {
@@ -239,7 +241,9 @@ const FriendProfile = () => {
             <Text style={styles.workoutType}>{lastWorkout.workout}</Text>
             <View style={styles.workoutDetails}>
               {lastWorkout.weight && (
-                <Text style={styles.workoutDetail}>Weight: {lastWorkout.weight}</Text>
+                <Text style={styles.workoutDetail}>
+                  Weight: {formatWeight(lastWorkout.weight, friendData.units || 'lbs')}
+                </Text>
               )}
               {lastWorkout.sets && (
                 <Text style={styles.workoutDetail}>Sets: {lastWorkout.sets}</Text>
