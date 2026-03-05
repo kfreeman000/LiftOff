@@ -32,6 +32,7 @@ const ProfileScreen = () => {
   const [dob, setDob] = useState('');
   const [publicP, setPublicP] = useState(false);  // true = public profile
   const [units, setUnits] = useState(true);   // true = lbs
+  const [showWorkouts, setShowWorkouts] = useState(true); // to do 
   const [isProfileModalVisible, setProfileModalVisible] = useState(false);
   const [isSettingsModalVisible, setSettingsModalVisible] = useState(false);
   const [isLearnModalVisible, setLearnModalVisible] = useState(false);
@@ -250,7 +251,7 @@ const ProfileScreen = () => {
   }
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: 'center', padding: 20 }}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: 'center', padding: 20, backgroundColor: "white" }}>
       <TouchableOpacity onPress={updatePic}>
         <Image
           source={{ uri: pic?.uri ?? defaultPic }}
@@ -511,6 +512,38 @@ const ProfileScreen = () => {
             />
             <Text style={{ marginLeft: 10 }}>
               {units ? 'lbs' : 'kg'}
+            </Text>
+          </View>
+
+          <Text style={{color: "#56c5f5",
+                        textAlign: "left",
+                        fontWeight: 'bold',
+                        fontFamily: 'Comfortaa-Bold',
+                        fontSize: 15,
+                        paddingBottom:15,
+                        paddingTop: 60,
+          }}>Displays</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
+            <Switch
+            
+              value={publicP}
+              onValueChange={setPublicP}
+              trackColor={{ false: '#ccc', true: '#4CAF50' }}
+              thumbColor={publicP ? '#fff' : '#f4f3f4'}
+            />
+            <Text style={{ marginLeft: 10 }}>
+              {publicP ? 'Public' : 'Private'}
+            </Text>
+
+            <Switch
+            style={{paddingLeft: 40}}
+              value={publicP}
+              onValueChange={setPublicP}
+              trackColor={{ false: '#ccc', true: '#4CAF50' }}
+              thumbColor={publicP ? '#fff' : '#f4f3f4'}
+            />
+            <Text style={{ marginLeft: 10 }}>
+              Gender
             </Text>
           </View>
 

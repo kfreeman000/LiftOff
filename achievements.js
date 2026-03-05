@@ -219,7 +219,7 @@ const CreateGoalForm = () => {
       const goalsSnap = await getDocs(goalsRef);
       
       await addGoal(goal); // Save goal to Firestore
-      Alert.alert('success', 'goal saved!✅');
+      Alert.alert('Success ✅', 'goal saved!');
 
       if (goalsSnap.size == 0) {
         await GoalSetter_achievement(uid, '3');
@@ -241,12 +241,12 @@ const CreateGoalForm = () => {
         ref={inputRef}
         style={styles.input}
         placeholder="Squat 200lbs"
-        placeholderTextColor="grey"
+        placeholderTextColor="lightgrey"
         value={goal}
         onChangeText={setGoal}
       />
       <TouchableOpacity style={styles.buttonContainer} onPress={saveGoal} activeOpacity={0.5}>
-      <Text style={styles.buttonText}>save</Text>
+      <Text style={styles.buttonText}>Save</Text>
       </TouchableOpacity>
     </View>
     </TouchableWithoutFeedback>

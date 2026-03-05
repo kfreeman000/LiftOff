@@ -135,7 +135,7 @@ const FriendList = () => {
       });
 
       if (matchingUsers.length === 0) {
-        Alert.alert('Not Found', 'No public profiles found with that name');
+        Alert.alert("Not Found", "Hmmmm... maybe their profile isn't public?");
         setSearching(false);
         return;
       }
@@ -256,7 +256,7 @@ const FriendList = () => {
           ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
       ) : (
-        <Text style={styles.emptyText}>No friends yet. Search for users to add them!</Text>
+        <Text style={{ marginTop: 20, fontSize: 16, fontStyle: 'italic' }}>No friends yet. Search for users to add them!</Text>
       )}
     </View>
   );
@@ -266,8 +266,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f8f8f8',
-    marginTop: 70,
+    paddingTop: 90,
+    backgroundColor: 'white',
+    
+    
   },
   input: {
     color: 'black',
@@ -283,7 +285,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 15,
     paddingHorizontal: 20,
-    backgroundColor: 'white',
+    backgroundColor: '#f8f8f8',
     alignItems: 'center',
   },
   friendImage: {

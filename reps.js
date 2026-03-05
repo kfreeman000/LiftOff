@@ -79,7 +79,7 @@ const WorkoutsList = () => {
   }, []);
 
   const handleDelete = async (rowKey) => {
-    Alert.alert('Delete Workout', 'Are you sure you want to delete this workout?', [
+    Alert.alert('Delete Workout? 🚨', 'Watch out! This cannot be undone.', [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete', style: 'destructive', onPress: async () => {
