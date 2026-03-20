@@ -275,7 +275,7 @@ const ProfileScreen = () => {
         <Text style={styles.buttonText}>Edit Settings</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.ProfileButtonContainer}> 
+      <TouchableOpacity style={styles.ProfileButtonContainer} onPress={() => setLearnModalVisible(true)}>
           <Text style={styles.buttonText}>Learn More</Text> 
       </TouchableOpacity> 
 
@@ -560,8 +560,16 @@ const ProfileScreen = () => {
       </Modal>
 
       {/* Learn More Modal */}
-      <Modal visible={isLearnModalVisible} animationType='fade' transparent={false} >
+      <Modal visible={isLearnModalVisible} animationType='fade' transparent={false}>
          {/* write stuff about me and why i created app and such */}
+      <ScrollView contentContainerStyle={{ padding: 20 }}>
+
+          <Text style={styles.text}>About the author... coder</Text>
+          <View>
+          <Text>My name is Katherine Freeman. I have been in the gym </Text>
+          </View>
+      
+      </ScrollView>
       </Modal>
     </ScrollView>
   );
