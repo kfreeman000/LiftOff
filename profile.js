@@ -566,7 +566,9 @@ const ProfileScreen = () => {
 
           <Text style={styles.text}>About the author... coder</Text>
           <View>
-          <Text>My name is Katherine Freeman. I have been in the gym </Text>
+          <Text>My name is Katherine Freeman. I have been in the gym for over four years. I wanted to make a simple
+                app to track compound lifts specifically. 
+          </Text>
           </View>
       
       </ScrollView>
