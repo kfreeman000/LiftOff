@@ -487,6 +487,7 @@ const ProfileScreen = () => {
       {/* Settings Modal */}
       <Modal visible={isSettingsModalVisible} animationType='fade' transparent={false}>
         <ScrollView contentContainerStyle={{ padding: 20 }}>
+              
           <Text style={styles.text}>Edit Settings</Text>
 
           <Text style={styles.editText}>Privacy</Text>
@@ -563,11 +564,19 @@ const ProfileScreen = () => {
       <Modal visible={isLearnModalVisible} animationType='fade' transparent={false}>
          {/* write stuff about me and why i created app and such */}
       <ScrollView contentContainerStyle={{ padding: 20 }}>
+        
+        <TouchableOpacity
+          style={{ position: 'absolute', top: 56, left: 20, zIndex: 10, padding: 8 }}
+          onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Profile' }] })}
+        >
+          <Text style={{ fontSize: 17, color: '#333', fontWeight: '600' }}>← Back</Text>
+        </TouchableOpacity>
 
-          <Text style={styles.text}>About the author... coder</Text>
+          <Text style={styles.text}>Who am I?</Text>
           <View>
           <Text>My name is Katherine Freeman. I have been in the gym for over four years. I wanted to make a simple
-                app to track compound lifts specifically. 
+                app to track compound lifts specifically. I hope to bring friends together and encourage and stabilize your fitness journey.
+                Keep the PR's coming.
           </Text>
           </View>
       

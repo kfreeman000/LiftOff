@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Image, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View, FlatList, Animated, Alert, Keyboard, Modal } from 'react-native';
+import { Image, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, ScrollView, View, FlatList, Animated, Alert, Keyboard, Modal } from 'react-native';
 import { db, auth } from './firebase';
 import { collection, query, getDocs, getDoc, updateDoc, orderBy, addDoc, serverTimestamp, deleteDoc, doc, limit, where } from 'firebase/firestore'; 
 import styles from './style.js'; 
 import { SwipeListView } from 'react-native-swipe-list-view';
+import { useNavigation } from '@react-navigation/native';
 
 
 const achievements = [
@@ -99,6 +100,7 @@ async function getEarnedAchievements(uid) {
 
 // view achievemnets button with flip animation for each achievement
 const ViewAchievementsForm = () => {
+  const navigation = useNavigation();
 
 
   const flipAnim = useRef({}).current;
@@ -151,6 +153,17 @@ const ViewAchievementsForm = () => {
     });
 
     return (
+      <ScrollView contentContainerStyle={{ padding: 20 }}>
+        <View>
+      <TouchableOpacity
+      style={{ position: 'absolute', top: 56, left: 20, zIndex: 10, padding: 8 }}
+      onPress={() => navigation.reset({ index: 0, routes: [{ name: 'AchievementsMain' }] })}
+    >
+      <Text style={{ fontSize: 17, color: '#333', fontWeight: '600' }}>← Back</Text>
+    </TouchableOpacity>
+      </View>
+    
+
       <TouchableOpacity onPress={() => flipCard(item.key)} style={styles.container}>
         <Animated.View style={[styles.cardFace, { opacity: frontOpacity }]}>
           <Text style={styles.achievementTitle}>{item.title}</Text>
@@ -161,6 +174,9 @@ const ViewAchievementsForm = () => {
           <Text style={{ fontSize: 18, color: 'white', fontFamily: 'Comfortaa-Bold', fontWeight: 'bold' }}>{item.details}</Text>
         </Animated.View>
       </TouchableOpacity>
+      </ScrollView>
+      
+        
     );
   };
 
@@ -168,7 +184,7 @@ const ViewAchievementsForm = () => {
     <View style={styles.container}>
       {earnedList.length === 0 && (
         <Text style={{ fontStyle: 'italic' }}>
-          no achievements yet
+          No achievements yet
         </Text>
       )}
 
@@ -202,6 +218,7 @@ const addGoal = async (goal) => {
 
 
 const CreateGoalForm = () => {
+  
   const [goal, setGoal] = useState('');
   const inputRef = useRef(null);
   
@@ -231,10 +248,22 @@ const CreateGoalForm = () => {
     } catch (e) {
       Alert.alert('Error', e.message);
     }
+    
   };
 
   return (
+    
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View>
+    
+      <TouchableOpacity
+      style={{ position: 'absolute', top: 56, left: 20, zIndex: 10, padding: 8 }}
+      onPress={() => navigation.reset({ index: 0, routes: [{ name: 'AchievementsMain' }] })}
+    >
+      <Text style={{ fontSize: 17, color: '#333', fontWeight: '600' }}>← Back</Text>
+    </TouchableOpacity>
+    </View>
+
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 15, backgroundColor: 'white' }}>
       <Text style={styles.header}>Create a goal of your own 💭</Text>
       <TextInput
@@ -260,6 +289,7 @@ const ViewGoalsForm = () => {
   const [goals, setGoals] = useState([]);
   const [selectedGoal, setSelectedGoal] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchGoals = async () => {
@@ -322,6 +352,15 @@ const ViewGoalsForm = () => {
 
   return (
     <View style={styles.goalsContainer}>
+      
+    <View>
+      <TouchableOpacity
+      style={{ position: 'absolute', top: 56, left: 20, zIndex: 10, padding: 8 }}
+      onPress={() => navigation.reset({ index: 0, routes: [{ name: 'AchievementsMain' }] })}
+    >
+      <Text style={{ fontSize: 17, color: '#333', fontWeight: '600' }}>← Back</Text>
+    </TouchableOpacity>
+      </View>
       <Text style={styles.header}>Your Goals 🎯</Text>
 
       <SwipeListView
