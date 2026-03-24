@@ -517,13 +517,13 @@ const ProfileScreen = () => {
           </View>
 
           <Text style={{color: "#56c5f5",
-                        textAlign: "left",
                         fontWeight: 'bold',
                         fontFamily: 'Comfortaa-Bold',
                         fontSize: 15,
                         paddingBottom:15,
                         paddingTop: 60,
           }}>Displays</Text>
+          <View style={{ flexDirection: 'column',  marginBottom: 15 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
             <Switch
             
@@ -535,9 +535,10 @@ const ProfileScreen = () => {
             <Text style={{ marginLeft: 10 }}>
               {publicP ? 'Public' : 'Private'}
             </Text>
+          </View>
 
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
             <Switch
-            style={{paddingLeft: 40}}
               value={publicP}
               onValueChange={setPublicP}
               trackColor={{ false: '#ccc', true: '#4CAF50' }}
@@ -546,6 +547,21 @@ const ProfileScreen = () => {
             <Text style={{ marginLeft: 10 }}>
               Gender
             </Text>
+          </View>
+
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
+            <Switch
+              value={publicP}
+              onValueChange={setPublicP}
+              trackColor={{ false: '#ccc', true: '#4CAF50' }}
+              thumbColor={publicP ? '#fff' : '#f4f3f4'}
+            />
+            <Text style={{ marginLeft: 10 }}>
+              Show Workouts 
+              {publicP ? 'Public' : 'Private'}
+            </Text>
+            </View>
+
           </View>
 
           <View style={{ marginTop: 30, alignItems: 'center' }}>

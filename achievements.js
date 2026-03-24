@@ -221,6 +221,7 @@ const CreateGoalForm = () => {
   
   const [goal, setGoal] = useState('');
   const inputRef = useRef(null);
+  const navigation = useNavigation();
   
 
   const saveGoal = async () => {
@@ -252,32 +253,38 @@ const CreateGoalForm = () => {
   };
 
   return (
-    
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View>
-    
-      <TouchableOpacity
-      style={{ position: 'absolute', top: 56, left: 20, zIndex: 10, padding: 8 }}
-      onPress={() => navigation.reset({ index: 0, routes: [{ name: 'AchievementsMain' }] })}
-    >
-      <Text style={{ fontSize: 17, color: '#333', fontWeight: '600' }}>← Back</Text>
-    </TouchableOpacity>
-    </View>
-
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 15, backgroundColor: 'white' }}>
-      <Text style={styles.header}>Create a goal of your own 💭</Text>
-      <TextInput
-        ref={inputRef}
-        style={styles.input}
-        placeholder="Squat 200lbs"
-        placeholderTextColor="lightgrey"
-        value={goal}
-        onChangeText={setGoal}
-      />
-      <TouchableOpacity style={styles.buttonContainer} onPress={saveGoal} activeOpacity={0.5}>
-      <Text style={styles.buttonText}>Save</Text>
-      </TouchableOpacity>
-    </View>
+      <View style={{ flex: 1 }}>
+  
+        <TouchableOpacity
+          style={{ position: 'absolute', top: 56, left: 20, zIndex: 10, padding: 8 }}
+          onPress={() => navigation.reset({ index: 0, routes: [{ name: 'AchievementsMain' }] })}
+        >
+          <Text style={{ fontSize: 17, color: '#333', fontWeight: '600' }}>← Back</Text>
+        </TouchableOpacity>
+  
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 15, backgroundColor: 'white' }}>
+          <Text style={styles.header}>Create a goal of your own 💭</Text>
+  
+          <TextInput
+            ref={inputRef}
+            style={styles.input}
+            placeholder="Squat 200lbs"
+            placeholderTextColor="lightgrey"
+            value={goal}
+            onChangeText={setGoal}
+          />
+  
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={saveGoal}
+            activeOpacity={0.5}
+          >
+            <Text style={styles.buttonText}>Save</Text>
+          </TouchableOpacity>
+        </View>
+  
+      </View>
     </TouchableWithoutFeedback>
   );
 };
@@ -353,7 +360,8 @@ const ViewGoalsForm = () => {
   return (
     <View style={styles.goalsContainer}>
       
-    <View>
+      <View>
+  
       <TouchableOpacity
       style={{ position: 'absolute', top: 56, left: 20, zIndex: 10, padding: 8 }}
       onPress={() => navigation.reset({ index: 0, routes: [{ name: 'AchievementsMain' }] })}
