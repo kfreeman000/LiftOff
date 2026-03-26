@@ -1,6 +1,6 @@
 // can edit profile and settings, update profile pic, and can logout
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Image, TouchableOpacity, Alert, ScrollView, Switch, Modal, Text, TextInput, ActivityIndicator } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import styles from './style.js';
@@ -516,13 +516,16 @@ const ProfileScreen = () => {
             </Text>
           </View>
 
+          
           <Text style={{color: "#56c5f5",
                         fontWeight: 'bold',
                         fontFamily: 'Comfortaa-Bold',
                         fontSize: 15,
                         paddingBottom:15,
                         paddingTop: 60,
-          }}>Displays</Text>
+                        }}>Displays
+          </Text>
+
           <View style={{ flexDirection: 'column',  marginBottom: 15 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
             <Switch

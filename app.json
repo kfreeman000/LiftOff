@@ -1,0 +1,18 @@
+{
+    "expo": {
+      "name": "LiftOff",
+      "slug": "liftoff",
+      "version": "1.0.0",
+      "orientation": "portrait",
+      "scheme": "liftoff",
+      "ios": {
+        "bundleIdentifier": "com.katherinefreeman.liftoff",
+        "buildNumber": "1.0.0",
+        "infoPlist": {
+          "NSCameraUsageDescription": "This app uses the camera to let you take a profile photo.",
+          "NSPhotoLibraryUsageDescription": "This app allows you to select a profile photo from your library.",
+          "NSPhotoLibraryAddUsageDescription": "This app may save profile photos to your library."
+        }
+      }
+    }
+  }
