@@ -33,6 +33,7 @@ const ProfileScreen = () => {
   const [publicP, setPublicP] = useState(false);  // true = public profile
   const [units, setUnits] = useState(true);   // true = lbs
   const [showWorkouts, setShowWorkouts] = useState(true); // to do 
+  const [showGender, setShowGender] = useState(true);
   const [isProfileModalVisible, setProfileModalVisible] = useState(false);
   const [isSettingsModalVisible, setSettingsModalVisible] = useState(false);
   const [isLearnModalVisible, setLearnModalVisible] = useState(false);
@@ -54,46 +55,62 @@ const ProfileScreen = () => {
           setPublicP(false);
           setUnits(true);
           setPic({ uri: defaultPic });
+  
+          // ✅ FIX: reset these WITHOUT using data
+          setShowWorkouts(true);
+          setShowGender(true);
+  
           setLoadingProfile(false);
           return;
         }
-
+  
         setUid(user.uid);
-
+  
         const ref = doc(db, 'users', user.uid);
         const snap = await getDoc(ref);
-
-        if (snap.exists()) {
-          const data = snap.data();
-
-          setName(data.name ?? '');
-          setEmail(data.email ?? user.email ?? '');
-          setHeight(data.height ?? '');
-          setWeight(data.weight ?? '');
-          setGender(data.gender ?? '');
-
-          if (data.birthMonth && data.birthDay && data.birthYear) {
-            setDob(`${data.birthMonth}/${data.birthDay}/${data.birthYear}`);
-          } else {
-            setDob(data.dob ?? '');
-          }
-
-          setPublicP(Boolean(data.publicProfile));
-          setUnits((data.units ?? 'lbs') === 'lbs');
-
-          const url = data.photoURL ?? defaultPic;
-          setPic({ uri: url });
-        } else {
+  
+        // ✅ FIX: safe guard
+        if (!snap || !snap.exists()) {
           setEmail(user.email ?? '');
           setPic({ uri: defaultPic });
+  
+          // also reset safely here
+          setShowWorkouts(true);
+          setShowGender(true);
+  
+          return;
         }
+  
+        const data = snap.data();
+  
+        setName(data.name ?? '');
+        setEmail(data.email ?? user.email ?? '');
+        setHeight(data.height ?? '');
+        setWeight(data.weight ?? '');
+        setGender(data.gender ?? '');
+  
+        if (data.birthMonth && data.birthDay && data.birthYear) {
+          setDob(`${data.birthMonth}/${data.birthDay}/${data.birthYear}`);
+        } else {
+          setDob(data.dob ?? '');
+        }
+  
+        setPublicP(Boolean(data.publicProfile));
+        setUnits((data.units ?? 'lbs') === 'lbs');
+  
+        setShowWorkouts(data.showWorkouts ?? true);
+        setShowGender(data.showGender ?? true);
+  
+        const url = data.photoURL ?? defaultPic;
+        setPic({ uri: url });
+  
       } catch (e) {
         console.error('Error loading profile:', e);
       } finally {
         setLoadingProfile(false);
       }
     });
-
+  
     return unsub;
   }, []);
 
@@ -138,6 +155,10 @@ const ProfileScreen = () => {
         gender,
         dob,
         photoURL: pic?.uri ?? defaultPic,
+        publicProfile: publicP,
+        units: units ? 'lbs' : 'kg',
+        showWorkouts: showWorkouts,
+        showGender: showGender,
       });
 
       setProfileModalVisible(false);
@@ -170,10 +191,7 @@ const ProfileScreen = () => {
   };
 
   
-  const handleLearnMore = async () => { // TO DO 
-    
-
-  };
+ 
 
   const handleLogout = async () => {
     try {
@@ -527,41 +545,29 @@ const ProfileScreen = () => {
           </Text>
 
           <View style={{ flexDirection: 'column',  marginBottom: 15 }}>
+          
+
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
             <Switch
-            
-              value={publicP}
-              onValueChange={setPublicP}
+              value={showGender}
+              onValueChange={setShowGender}
               trackColor={{ false: '#ccc', true: '#4CAF50' }}
-              thumbColor={publicP ? '#fff' : '#f4f3f4'}
+              thumbColor={showGender ? '#fff' : '#f4f3f4'}
             />
             <Text style={{ marginLeft: 10 }}>
-              {publicP ? 'Public' : 'Private'}
+            {showGender ? 'Gender shown' : 'Gender hidden'}
             </Text>
           </View>
 
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
             <Switch
-              value={publicP}
-              onValueChange={setPublicP}
+              value={showWorkouts}
+              onValueChange={setShowWorkouts}
               trackColor={{ false: '#ccc', true: '#4CAF50' }}
-              thumbColor={publicP ? '#fff' : '#f4f3f4'}
+              thumbColor={showWorkouts ? '#fff' : '#f4f3f4'}
             />
             <Text style={{ marginLeft: 10 }}>
-              Gender
-            </Text>
-          </View>
-
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 15 }}>
-            <Switch
-              value={publicP}
-              onValueChange={setPublicP}
-              trackColor={{ false: '#ccc', true: '#4CAF50' }}
-              thumbColor={publicP ? '#fff' : '#f4f3f4'}
-            />
-            <Text style={{ marginLeft: 10 }}>
-              Show Workouts 
-              {publicP ? 'Public' : 'Private'}
+              {showWorkouts ? 'Workouts shown' : 'Workouts hidden'}
             </Text>
             </View>
 
