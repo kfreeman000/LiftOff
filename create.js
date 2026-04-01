@@ -16,8 +16,8 @@ import styles from './style';
 import { KeyboardAvoidingView, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
-
 import { auth, db } from './firebase';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { createUserWithEmailAndPassword, sendEmailVerification  } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -97,13 +97,33 @@ export default function CreateAcc() {
     const isValid = emailTest(email);
     if (isValid == false){
       Alert.alert('Whoops! ⚠️', 'This email is not valid')
+      return;
     }
 
     try {
+
+      const storage = getStorage();
+
+      const uploadImage = async (uri, uid) => {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+
+      const imageRef = ref(storage, `profilePics/${uid}`);
+      await uploadBytes(imageRef, blob);
+
+      const downloadURL = await getDownloadURL(imageRef);
+      return downloadURL;
+      };
+
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await sendEmailVerification(userCredential.user);
+      
       const uid = userCredential.user.uid;
+      let photoURL = null;
 
+      if (pic?.uri) {
+        photoURL = await uploadImage(pic.uri, uid);
+      }
 
       await setDoc(doc(db, 'users', uid), {
         name,
@@ -116,7 +136,7 @@ export default function CreateAcc() {
         birthYear,
         publicProfile,
         units: units ? 'lbs' : 'kg',
-        photoURL: pic.uri,
+        photoURL: photoURL || defaultPic,
         createdAt: serverTimestamp(),
       });
 

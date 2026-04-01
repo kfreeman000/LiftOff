@@ -10,6 +10,7 @@ import { Picker } from '@react-native-picker/picker';
 import { auth, db } from './firebase';
 import { onAuthStateChanged, signOut, deleteUser } from 'firebase/auth';
 import { doc, getDoc, updateDoc, deleteDoc, collection, getDocs } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = () => {
@@ -17,7 +18,7 @@ const ProfileScreen = () => {
 
   const defaultPic = Image.resolveAssetSource(require('./assets/blankProfilePic.webp')).uri;
   const [pic, setPic] = useState({ uri: defaultPic });
-
+  
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [height, setHeight] = useState('');
@@ -55,11 +56,8 @@ const ProfileScreen = () => {
           setPublicP(false);
           setUnits(true);
           setPic({ uri: defaultPic });
-  
-          // ✅ FIX: reset these WITHOUT using data
           setShowWorkouts(true);
           setShowGender(true);
-  
           setLoadingProfile(false);
           return;
         }
@@ -68,13 +66,10 @@ const ProfileScreen = () => {
   
         const ref = doc(db, 'users', user.uid);
         const snap = await getDoc(ref);
-  
-        // ✅ FIX: safe guard
+
         if (!snap || !snap.exists()) {
           setEmail(user.email ?? '');
           setPic({ uri: defaultPic });
-  
-          // also reset safely here
           setShowWorkouts(true);
           setShowGender(true);
   
@@ -147,6 +142,25 @@ const ProfileScreen = () => {
     try {
       const userRef = doc(db, 'users', uid);
 
+      const storage = getStorage();
+
+      const uploadImage = async (uri, uid) => {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+
+      const imageRef = ref(storage, `profilePics/${uid}`);
+      await uploadBytes(imageRef, blob);
+
+      const downloadURL = await getDownloadURL(imageRef);
+      return downloadURL;
+    };
+
+      let photoURL = pic?.uri ?? defaultPic;
+
+      if (pic?.uri && pic.uri.startsWith("file")) {
+        photoURL = await uploadImage(pic.uri, uid);
+      }
+
       await updateDoc(userRef, {
         name,
         email,
@@ -154,7 +168,7 @@ const ProfileScreen = () => {
         weight,
         gender,
         dob,
-        photoURL: pic?.uri ?? defaultPic,
+        photoURL, 
         publicProfile: publicP,
         units: units ? 'lbs' : 'kg',
         showWorkouts: showWorkouts,
