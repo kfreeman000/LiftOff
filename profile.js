@@ -148,7 +148,7 @@ const ProfileScreen = () => {
       const response = await fetch(uri);
       const blob = await response.blob();
 
-      const imageRef = ref(storage, `profilePics/${uid}`);
+      const imageRef = ref(storage, `profilePics/${uid}_${Date.now()}`);
       await uploadBytes(imageRef, blob);
 
       const downloadURL = await getDownloadURL(imageRef);
