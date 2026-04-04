@@ -13,12 +13,11 @@ import {
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { auth, db } from './firebase';
-import { collection, query, where, getDocs, addDoc, doc, getDoc, orderBy, limit } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, getDoc, orderBy, limit } from 'firebase/firestore';
 
 const FriendList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [friends, setFriends] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [searching, setSearching] = useState(false);
   const navigation = useNavigation();
 
@@ -108,10 +107,10 @@ const FriendList = () => {
       const usersRef = collection(db, 'users');
       const searchLower = searchQuery.toLowerCase().trim();
       
-      // Firestore doesn't support case-insensitive search directly,
-      // so we'll get all users and filter (for small datasets this is fine)
-      // For production, consider using Algolia or storing lowercase name field
-      const querySnapshot = await getDocs(usersRef);
+      // Restrict query to public profiles so security rules allow the list (unfiltered queries can fail).
+      // Firestore doesn't support case-insensitive search; filter names client-side.
+      const q = query(usersRef, where('publicProfile', '==', true));
+      const querySnapshot = await getDocs(q);
       
       const matchingUsers = [];
       querySnapshot.forEach((docSnap) => {
@@ -160,36 +159,6 @@ const FriendList = () => {
       Alert.alert('Error', 'Failed to search for user');
     } finally {
       setSearching(false);
-    }
-  };
-
-  const addFriend = async (friendUid) => {
-    try {
-      const uid = auth.currentUser?.uid;
-      if (!uid) return;
-
-      // Check if already a friend
-      const friendsRef = collection(db, 'users', uid, 'friends');
-      const querySnapshot = await getDocs(
-        query(friendsRef, where('friendUid', '==', friendUid))
-      );
-
-      if (!querySnapshot.empty) {
-        Alert.alert('Already Added', 'This user is already in your friends list');
-        return;
-      }
-
-      // Add friend
-      await addDoc(friendsRef, {
-        friendUid: friendUid,
-        addedAt: new Date(),
-      });
-
-      Alert.alert('Success ✅', 'Friend added!');
-      loadFriends(); // Reload friends list
-    } catch (error) {
-      console.error('Error adding friend:', error);
-      Alert.alert('Error', 'Failed to add friend');
     }
   };
 

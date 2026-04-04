@@ -97,7 +97,7 @@ export default function CreateAcc() {
     const isValid = emailTest(email);
     if (isValid == false){
       Alert.alert('Whoops! ⚠️', 'This email is not valid')
-      return;
+      
     }
 
     try {
@@ -125,7 +125,7 @@ export default function CreateAcc() {
         photoURL = await uploadImage(pic.uri, uid);
       }
 
-      await setDoc(doc(db, 'users', uid), {
+      await setDoc(doc(db, 'users', uid), { 
         name,
         email,
         height,

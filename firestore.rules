@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Profile doc: owner full access; others may read only public profiles
+    match /users/{userId} {
+      allow read: if request.auth != null && (
+        request.auth.uid == userId ||
+        resource.data.publicProfile == true
+      );
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Friend list: only the signed-in user may read/write their own subcollection
+    match /users/{userId}/friends/{docId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Workouts: owner full access; readable for others when profile is public (e.g. last workout on friends screen)
+    match /users/{userId}/workouts/{docId} {
+      allow read: if request.auth != null && (
+        request.auth.uid == userId ||
+        get(/databases/$(database)/documents/users/$(userId)).data.publicProfile == true
+      );
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Goals: private to owner
+    match /users/{userId}/goals/{docId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
