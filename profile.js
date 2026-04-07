@@ -555,7 +555,7 @@ const ProfileScreen = () => {
                         fontSize: 15,
                         paddingBottom:15,
                         paddingTop: 60,
-                        }}>Displays
+                        }}>Profile Display
           </Text>
 
           <View style={{ flexDirection: 'column',  marginBottom: 15 }}>

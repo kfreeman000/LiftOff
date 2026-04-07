@@ -54,8 +54,9 @@ export default function CreateAcc() {
   const [genderModalVisible, setGenderModalVisible] = useState(false);
 
   const updatePic = async () => {
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    console.log("updatePic called"); // 🔹
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    console.log("Permission:", permissionResult.granted); 
 
     if (!permissionResult.granted) {
       Alert.alert(
@@ -66,7 +67,7 @@ export default function CreateAcc() {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ImagePicker.MediaType.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
@@ -105,14 +106,19 @@ export default function CreateAcc() {
       const storage = getStorage();
 
       const uploadImage = async (uri, uid) => {
-      const response = await fetch(uri);
-      const blob = await response.blob();
-
-      const imageRef = ref(storage, `profilePics/${uid}`);
-      await uploadBytes(imageRef, blob);
-
-      const downloadURL = await getDownloadURL(imageRef);
-      return downloadURL;
+        try {
+          const response = await fetch(uri);
+          const blob = await response.blob();
+      
+          const imageRef = ref(storage, `profilePics/${uid}.jpg`);
+          await uploadBytes(imageRef, blob);
+      
+          const downloadURL = await getDownloadURL(imageRef);
+          return downloadURL;
+        } catch (err) {
+          console.log("Image upload error:", err);
+          throw err;
+        }
       };
 
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -183,8 +189,8 @@ export default function CreateAcc() {
 
         <View style={{ alignItems: 'center', marginBottom: 20 }}>
           <TouchableOpacity onPress={updatePic}>
-            <Image
-              source={{ uri: pic.uri }}
+          <Image 
+              source={pic ? { uri: pic.uri } : defaultPic}
               style={{ width: 120, height: 120, borderRadius: 60 }}
             />
           </TouchableOpacity>
