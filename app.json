@@ -5,25 +5,38 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "liftoff",
+
     "ios": {
       "bundleIdentifier": "com.katherinefreeman.liftoff",
       "buildNumber": "1.0.0",
+      "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to let you take a profile photo.",
         "NSPhotoLibraryUsageDescription": "This app allows you to select a profile photo from your library.",
         "NSPhotoLibraryAddUsageDescription": "This app may save profile photos to your library."
       }
     },
+
     "android": {
       "package": "com.katherinefreeman.liftoff"
     },
+
     "extra": {
       "eas": {
         "projectId": "30ceb2d2-b8f6-4dd0-9006-207028d85467"
       }
     },
+
     "plugins": [
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
     ]
   }
 }
