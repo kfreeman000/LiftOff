@@ -5,7 +5,6 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "liftoff",
-
     "ios": {
       "bundleIdentifier": "com.katherinefreeman.liftoff",
       "buildNumber": "1.0.0",
@@ -16,17 +15,14 @@
         "NSPhotoLibraryAddUsageDescription": "This app may save profile photos to your library."
       }
     },
-
     "android": {
       "package": "com.katherinefreeman.liftoff"
     },
-
     "extra": {
       "eas": {
         "projectId": "30ceb2d2-b8f6-4dd0-9006-207028d85467"
       }
     },
-
     "plugins": [
       "expo-asset",
       [
@@ -36,7 +32,8 @@
             "useFrameworks": "static"
           }
         }
-      ]
+      ],
+      "expo-font"
     ]
   }
 }
