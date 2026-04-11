@@ -5,6 +5,7 @@ import { collection, query, getDocs, getDoc, updateDoc, orderBy, addDoc, serverT
 import styles from './style.js'; 
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { useNavigation } from '@react-navigation/native';
+import { hasMusclePowerFromWorkoutRows, friendAchievementKeysToAward } from './achievementLogic';
 
 
 const achievements = [
@@ -39,7 +40,7 @@ const AchievementsForm = ({ navigation }) => {
 };
 
 
-async function AwardAchievement(uid, key) { // for achievements page; still need functions for each specific achievement
+async function AwardAchievement(uid, key) {
   const userRef = doc(db, "users", uid);
   const snap = await getDoc(userRef);
 
@@ -87,6 +88,34 @@ async function GoalSetter_achievement(uid, key) {
   await AwardAchievement(uid, key);
 }
 
+/** Call after a friend is added. Awards Friend Finder (first friend) and Community Driven (10+). */
+async function maybeAwardFriendAchievements(uid) {
+  const friendsRef = collection(db, 'users', uid, 'friends');
+  const snap = await getDocs(friendsRef);
+  const keys = friendAchievementKeysToAward(snap.size);
+  for (const key of keys) {
+    await AwardAchievement(uid, key);
+  }
+}
+
+/** Reconcile badges from existing Firestore data (e.g. returning users). */
+async function syncAchievementsFromFirestore(uid) {
+  const workoutsRef = collection(db, 'users', uid, 'workouts');
+  const workoutsSnap = await getDocs(workoutsRef);
+  if (workoutsSnap.size >= 1) await AwardAchievement(uid, '2');
+
+  const workoutRows = workoutsSnap.docs.map((d) => d.data());
+  if (hasMusclePowerFromWorkoutRows(workoutRows)) {
+    await AwardAchievement(uid, '1');
+  }
+
+  const goalsRef = collection(db, 'users', uid, 'goals');
+  const goalsSnap = await getDocs(goalsRef);
+  if (goalsSnap.size >= 1) await AwardAchievement(uid, '3');
+
+  await maybeAwardFriendAchievements(uid);
+}
+
 async function getEarnedAchievements(uid) {
   const userRef = doc(db, "users", uid);
   const snap = await getDoc(userRef);
@@ -117,11 +146,19 @@ const ViewAchievementsForm = () => {
 
   const uid = auth.currentUser?.uid;
   useEffect(() => {
-    
-    if (uid) {
-      getEarnedAchievements(uid).then(setEarned);
-    }
-      }, []);
+    if (!uid) return;
+    let cancelled = false;
+    (async () => {
+      await syncAchievementsFromFirestore(uid);
+      if (!cancelled) {
+        const next = await getEarnedAchievements(uid);
+        if (!cancelled) setEarned(next);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [uid]);
 
   const earnedList = achievements.filter(a => earned[a.key]);
 
@@ -413,4 +450,14 @@ const ViewGoalsForm = () => {
 };
 
 
-export { AchievementsForm, ViewAchievementsForm, ViewGoalsForm, CreateGoalForm, AwardAchievement, maybeAwardWorkoutAchievements, GoalSetter_achievement};
+export {
+  AchievementsForm,
+  ViewAchievementsForm,
+  ViewGoalsForm,
+  CreateGoalForm,
+  AwardAchievement,
+  maybeAwardWorkoutAchievements,
+  maybeAwardFriendAchievements,
+  syncAchievementsFromFirestore,
+  GoalSetter_achievement,
+};

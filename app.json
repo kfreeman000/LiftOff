@@ -10,6 +10,7 @@
       "buildNumber": "1.0.0",
       "supportsTablet": true,
       "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
         "NSCameraUsageDescription": "This app uses the camera to let you take a profile photo.",
         "NSPhotoLibraryUsageDescription": "This app allows you to select a profile photo from your library.",
         "NSPhotoLibraryAddUsageDescription": "This app may save profile photos to your library."

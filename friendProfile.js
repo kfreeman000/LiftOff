@@ -13,6 +13,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { auth, db } from './firebase';
 import { doc, getDoc, collection, query, orderBy, limit, getDocs, addDoc, deleteDoc, where } from 'firebase/firestore';
 import { formatWeight } from './utils';
+import { maybeAwardFriendAchievements } from './achievements';
 
 const FriendProfile = () => {
   const navigation = useNavigation();
@@ -149,6 +150,8 @@ const FriendProfile = () => {
         friendUid: friendUid,
         addedAt: new Date(),
       });
+
+      await maybeAwardFriendAchievements(uid);
 
       setIsFriend(true);
       Alert.alert('Success ✅', 'Friend added!');
