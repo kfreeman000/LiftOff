@@ -12,7 +12,7 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { auth, db } from './firebase';
 import { doc, getDoc, collection, query, orderBy, limit, getDocs, addDoc, deleteDoc, where } from 'firebase/firestore';
-import { formatWeight } from './utils';
+import { formatWeight, profileImageUri } from './utils';
 import { maybeAwardFriendAchievements } from './achievements';
 
 const FriendProfile = () => {
@@ -61,17 +61,25 @@ const FriendProfile = () => {
         return;
       }
 
-      // Get last workout if not provided
-      let workout = lastWorkout;
-      if (!workout) {
-        workout = await getLastWorkout(friendUid);
+      const showWorkouts = userData.showWorkouts !== false;
+      const showGender = userData.showGender !== false;
+
+      let workout = null;
+      if (showWorkouts) {
+        workout = lastWorkout;
+        if (!workout) {
+          workout = await getLastWorkout(friendUid);
+        }
       }
 
       setFriendData({
         name: userData.name || 'Unknown',
-        photoURL: userData.photoURL || defaultPic,
+        photoURL: profileImageUri(userData.photoURL, defaultPic),
         createdAt: userData.createdAt,
         units: (userData.units ?? 'lbs') === 'kg' ? 'kg' : 'lbs',
+        gender: userData.gender || '',
+        showGender,
+        showWorkouts,
       });
       setLastWorkout(workout);
     } catch (error) {
@@ -220,7 +228,7 @@ const FriendProfile = () => {
     <ScrollView style={styles.container}>
       <View style={styles.profileHeader}>
         <Image
-          source={{ uri: friendData.photoURL || defaultPic }}
+          source={{ uri: friendData.photoURL }}
           style={styles.profileImage}
         />
         <Text style={styles.name}>{friendData.name}</Text>
@@ -235,11 +243,19 @@ const FriendProfile = () => {
             {formatDate(friendData.createdAt)}
           </Text>
         </View>
+        {friendData.showGender && friendData.gender ? (
+          <View style={styles.infoRow}>
+            <Text style={styles.infoLabel}>Gender:</Text>
+            <Text style={styles.infoValue}>{friendData.gender}</Text>
+          </View>
+        ) : null}
       </View>
 
       <View style={styles.infoSection}>
         <Text style={styles.sectionTitle}>Last Workout</Text>
-        {lastWorkout ? (
+        {!friendData.showWorkouts ? (
+          <Text style={styles.noWorkoutText}>This person chose to hide workout activity</Text>
+        ) : lastWorkout ? (
           <View style={styles.workoutCard}>
             <Text style={styles.workoutType}>{lastWorkout.workout}</Text>
             <View style={styles.workoutDetails}>

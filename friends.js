@@ -14,6 +14,7 @@ import {
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { auth, db } from './firebase';
 import { collection, query, where, getDocs, doc, getDoc, orderBy, limit } from 'firebase/firestore';
+import { profileImageUri } from './utils';
 
 const FriendList = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -49,16 +50,17 @@ const FriendList = () => {
         
         if (userSnap.exists() && userSnap.data().publicProfile) {
           const userData = userSnap.data();
-          // Get last workout
-          const lastWorkout = await getLastWorkout(friendUid);
-          
+          const showWorkouts = userData.showWorkouts !== false;
+          const lastWorkout = showWorkouts ? await getLastWorkout(friendUid) : null;
+
           friendsData.push({
             id: friendDoc.id,
             uid: friendUid,
             name: userData.name || 'Unknown',
-            photoURL: userData.photoURL || defaultPic,
+            photoURL: profileImageUri(userData.photoURL, defaultPic),
             createdAt: userData.createdAt,
-            lastWorkout: lastWorkout,
+            lastWorkout,
+            showWorkouts,
           });
         }
       }
@@ -127,8 +129,9 @@ const FriendList = () => {
           matchingUsers.push({
             uid: docSnap.id,
             name: userData.name || 'Unknown',
-            photoURL: userData.photoURL || defaultPic,
+            photoURL: profileImageUri(userData.photoURL, defaultPic),
             createdAt: userData.createdAt,
+            showWorkouts: userData.showWorkouts !== false,
           });
         }
       });
@@ -141,9 +144,10 @@ const FriendList = () => {
 
       // If multiple matches, show the first one (or you could show a list to choose from)
       const foundUser = matchingUsers[0];
-      
-      // Get last workout for the found user
-      const lastWorkout = await getLastWorkout(foundUser.uid);
+
+      const lastWorkout = foundUser.showWorkouts
+        ? await getLastWorkout(foundUser.uid)
+        : null;
       
       // Navigate to friend profile
       navigation.navigate('FriendProfile', {
@@ -163,7 +167,9 @@ const FriendList = () => {
   };
 
   const handlePress = async (friend) => {
-    const lastWorkout = await getLastWorkout(friend.uid);
+    const lastWorkout = friend.showWorkouts
+      ? await getLastWorkout(friend.uid)
+      : null;
     navigation.navigate('FriendProfile', {
       friendUid: friend.uid,
       friendName: friend.name,
@@ -184,7 +190,7 @@ const FriendList = () => {
       />
       <View style={styles.friendInfo}>
         <Text style={styles.friendName}>{item.name}</Text>
-        {item.lastWorkout && (
+        {item.showWorkouts && item.lastWorkout && (
           <Text style={styles.lastWorkoutText}>
             Last: {item.lastWorkout.workout} - {item.lastWorkout.date?.toLocaleDateString() || 'Unknown date'}
           </Text>

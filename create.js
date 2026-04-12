@@ -127,11 +127,12 @@ export default function CreateAcc() {
       const uid = userCredential.user.uid;
       let photoURL = null;
 
-      if (pic?.uri) {
+      const pickedCustomPhoto = pic?.uri && pic.uri !== defaultPic;
+      if (pickedCustomPhoto) {
         photoURL = await uploadImage(pic.uri, uid);
       }
 
-      await setDoc(doc(db, 'users', uid), { 
+      await setDoc(doc(db, 'users', uid), {
         name,
         email,
         height,
@@ -142,7 +143,9 @@ export default function CreateAcc() {
         birthYear,
         publicProfile,
         units: units ? 'lbs' : 'kg',
-        photoURL: photoURL || defaultPic,
+        showWorkouts: true,
+        showGender: true,
+        ...(photoURL ? { photoURL } : {}),
         createdAt: serverTimestamp(),
       });
 

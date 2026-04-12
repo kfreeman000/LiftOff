@@ -9,7 +9,7 @@ import { Picker } from '@react-native-picker/picker';
 
 import { auth, db } from './firebase';
 import { onAuthStateChanged, signOut, deleteUser } from 'firebase/auth';
-import { doc, getDoc, updateDoc, deleteDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, deleteDoc, collection, getDocs, deleteField } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -33,7 +33,7 @@ const ProfileScreen = () => {
   const [dob, setDob] = useState('');
   const [publicP, setPublicP] = useState(false);  // true = public profile
   const [units, setUnits] = useState(true);   // true = lbs
-  const [showWorkouts, setShowWorkouts] = useState(true); // to do 
+  const [showWorkouts, setShowWorkouts] = useState(true);
   const [showGender, setShowGender] = useState(true);
   const [isProfileModalVisible, setProfileModalVisible] = useState(false);
   const [isSettingsModalVisible, setSettingsModalVisible] = useState(false);
@@ -96,7 +96,10 @@ const ProfileScreen = () => {
         setShowWorkouts(data.showWorkouts ?? true);
         setShowGender(data.showGender ?? true);
   
-        const url = data.photoURL ?? defaultPic;
+        const url =
+          typeof data.photoURL === 'string' && /^https?:\/\//i.test(data.photoURL.trim())
+            ? data.photoURL.trim()
+            : defaultPic;
         setPic({ uri: url });
   
       } catch (e) {
@@ -155,10 +158,19 @@ const ProfileScreen = () => {
       return downloadURL;
     };
 
-      let photoURL = pic?.uri ?? defaultPic;
-
-      if (pic?.uri && pic.uri.startsWith("file")) {
+      let photoURL;
+      if (
+        pic?.uri &&
+        (pic.uri.startsWith('file') ||
+          pic.uri.startsWith('content') ||
+          pic.uri.startsWith('ph://') ||
+          pic.uri.startsWith('assets-library:'))
+      ) {
         photoURL = await uploadImage(pic.uri, uid);
+      } else if (pic?.uri && /^https?:\/\//i.test(pic.uri)) {
+        photoURL = pic.uri;
+      } else {
+        photoURL = null;
       }
 
       await updateDoc(userRef, {
@@ -168,7 +180,7 @@ const ProfileScreen = () => {
         weight,
         gender,
         dob,
-        photoURL, 
+        ...(photoURL ? { photoURL } : { photoURL: deleteField() }),
         publicProfile: publicP,
         units: units ? 'lbs' : 'kg',
         showWorkouts: showWorkouts,
@@ -195,6 +207,8 @@ const ProfileScreen = () => {
       await updateDoc(userRef, {
         publicProfile: publicP,
         units: units ? 'lbs' : 'kg',
+        showWorkouts: showWorkouts,
+        showGender: showGender,
       });
 
       setSettingsModalVisible(false);

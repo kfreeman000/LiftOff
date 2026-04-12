@@ -1,6 +1,23 @@
 // Pure utility functions for calculations and formatting
 
 /**
+ * Firestore may contain a local file/asset URI from an older bug; only https URLs are loadable for other users.
+ * @param {unknown} photoURL
+ * @param {string} defaultUri
+ * @returns {string}
+ */
+export const profileImageUri = (photoURL, defaultUri) => {
+  if (typeof photoURL !== 'string' || !photoURL.trim()) {
+    return defaultUri;
+  }
+  const t = photoURL.trim();
+  if (!/^https?:\/\//i.test(t)) {
+    return defaultUri;
+  }
+  return t;
+};
+
+/**
  * Calculate estimated one-rep max using the Epley formula
  * @param {number} weightLbs - Weight lifted in pounds (canonical unit)
  * @param {number} reps - Number of reps performed

@@ -1,0 +1,16 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Profile photos: public read so avatar URLs load for any signed-in user viewing a profile.
+    // Writes limited to files whose name starts with the authenticated user's uid.
+    match /profilePics/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && (fileName.matches('^' + request.auth.uid + '_.*') || fileName == request.auth.uid + '.jpg');
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

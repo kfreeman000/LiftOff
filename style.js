@@ -126,8 +126,8 @@ achievementItem: {
   marginVertical: 10,
 },
   achievementImage: {
-    width: 50,
-    height: 55,
+    width: 65,
+    height: 65,
     borderRadius: 25,
     alignSelf: "center",
     
