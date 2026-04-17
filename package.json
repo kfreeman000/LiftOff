@@ -25,7 +25,7 @@
     "expo": "^55.0.14",
     "expo-asset": "~55.0.14",
     "expo-build-properties": "~55.0.13",
-    "expo-dev-client": "~55.0.26",
+    "expo-dev-client": "~55.0.27",
     "expo-font": "~55.0.6",
     "expo-image-picker": "~55.0.18",
     "expo-linear-gradient": "~55.0.13",
