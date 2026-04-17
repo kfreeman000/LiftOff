@@ -59,19 +59,5 @@ target 'LiftOff' do
       :mac_catalyst_enabled => false,
       :ccache_enabled => ccache_enabled?(podfile_properties),
     )
-
-    # ExpoModulesCore needs Swift 6 (isolated conformances / @MainActor on protocols).
-    swift_version = '6.0'
-    installer.pods_project.targets.each do |target|
-      target.build_configurations.each do |config|
-        if target.name.start_with?('Firebase')
-          # Firebase iOS Swift (Auth, CoreInternal, etc.) is not Swift 6–clean; 5.9 avoids isolated-closure errors.
-          config.build_settings['SWIFT_VERSION'] = '5.9'
-          config.build_settings.delete('SWIFT_STRICT_CONCURRENCY')
-        else
-          config.build_settings['SWIFT_VERSION'] = swift_version
-        end
-      end
-    end
   end
 end

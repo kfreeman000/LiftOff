@@ -25,7 +25,7 @@
       }
     },
     "plugins": [
-      "expo-asset",
+      
       [
         "expo-build-properties",
         {
